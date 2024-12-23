@@ -28,7 +28,6 @@ class BurnFixture {
   amount1: BigInt
 }
 
-// https://etherscan.io/tx/0x26b168e005a168b28d518675435c9f51816697c086deef7377e0018e4eb65dc9
 const BURN_FIXTURE: BurnFixture = {
   owner: Address.fromString('0x8692f704a20d11be3b32de68656651b5291ed26c'),
   tickLower: 194280,

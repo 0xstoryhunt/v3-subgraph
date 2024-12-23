@@ -8,12 +8,12 @@ import { Pool, Token } from '../src/types/schema'
 import { SubgraphConfig } from '../src/utils/chains'
 import { ADDRESS_ZERO, ZERO_BD, ZERO_BI } from '../src/utils/constants'
 
-const FACTORY_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
-const USDC_MAINNET_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
-const WIP_MAINNET_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
-const WBTC_MAINNET_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
-export const USDC_WIP_03_MAINNET_POOL = '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8'
-export const WBTC_WIP_03_MAINNET_POOL = '0xcbcdf9626bc03e24f779434178a73a0b4bad62ed'
+const FACTORY_ADDRESS = '0x354631ac8fdb2d5d66Ca5809b78BCE9dda1b7973'
+const USDC_MAINNET_ADDRESS = '0xF1815bd50389c46847f0Bda824eC8da914045D14'
+const WIP_MAINNET_ADDRESS = '0x1516000000000000000000000000000000000000'
+const WBTC_MAINNET_ADDRESS = '0x...'
+export const USDC_WIP_03_MAINNET_POOL = '0x...'
+export const WBTC_WIP_03_MAINNET_POOL = '0x...'
 export const POOL_FEE_TIER_03 = 3000
 
 export const TEST_CONFIG: SubgraphConfig = {

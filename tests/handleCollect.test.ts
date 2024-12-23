@@ -29,7 +29,6 @@ class CollectFixture {
   amount1: BigInt
 }
 
-// https://etherscan.io/tx/0x328c84a513e6146dd3cf28861e8f2445e38d251c4b8a922057c755e12281c7ea
 const COLLECT_FIXTURE: CollectFixture = {
   owner: Address.fromString('0xc36442b4a4522e871399cd717abdd847ab11fe88'),
   recipient: Address.fromString('0xc36442b4a4522e871399cd717abdd847ab11fe88'),
