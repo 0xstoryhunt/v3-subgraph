@@ -11,6 +11,7 @@ import {
   updateTokenDayData,
   updateTokenHourData,
   updateStoryHuntDayData,
+  updateTokenMinuteData,
 } from '../../utils/intervalUpdates'
 import { getTrackedAmountUSD } from '../../utils/pricing'
 
@@ -100,6 +101,8 @@ export function handleCollectHelper(event: CollectEvent, subgraphConfig: Subgrap
   updateTokenDayData(token1 as Token, event)
   updateTokenHourData(token0 as Token, event)
   updateTokenHourData(token1 as Token, event)
+  updateTokenMinuteData(token0 as Token, event)
+  updateTokenMinuteData(token1 as Token, event)
 
   token0.save()
   token1.save()
