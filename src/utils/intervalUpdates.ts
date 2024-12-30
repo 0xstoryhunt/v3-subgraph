@@ -9,6 +9,7 @@ import {
   Token,
   TokenDayData,
   TokenHourData,
+  TokenMinuteData,
   StoryHuntDayData,
 } from './../types/schema'
 import { ONE_BI, ZERO_BD, ZERO_BI } from './constants'
@@ -202,4 +203,44 @@ export function updateTokenHourData(token: Token, event: ethereum.Event): TokenH
   tokenHourData.save()
 
   return tokenHourData as TokenHourData
+}
+
+export function updateTokenMinuteData(token: Token, event: ethereum.Event): TokenMinuteData {
+  const bundle = Bundle.load('1')!
+  const timestamp = event.block.timestamp.toI32()
+  const hourIndex = timestamp / 60 // get unique minute within unix history
+  const hourStartUnix = hourIndex * 60 // want the rounded effect
+  const tokenHourID = token.id.toString().concat('-').concat(hourIndex.toString())
+  let tokenMinuteData = TokenMinuteData.load(tokenHourID)
+  const tokenPrice = token.derivedIP.times(bundle.IPPriceUSD)
+
+  if (tokenMinuteData === null) {
+    tokenMinuteData = new TokenMinuteData(tokenHourID)
+    tokenMinuteData.periodStartUnix = hourStartUnix
+    tokenMinuteData.token = token.id
+    tokenMinuteData.volume = ZERO_BD
+    tokenMinuteData.volumeUSD = ZERO_BD
+    tokenMinuteData.untrackedVolumeUSD = ZERO_BD
+    tokenMinuteData.feesUSD = ZERO_BD
+    tokenMinuteData.open = tokenPrice
+    tokenMinuteData.high = tokenPrice
+    tokenMinuteData.low = tokenPrice
+    tokenMinuteData.close = tokenPrice
+  }
+
+  if (tokenPrice.gt(tokenMinuteData.high)) {
+    tokenMinuteData.high = tokenPrice
+  }
+
+  if (tokenPrice.lt(tokenMinuteData.low)) {
+    tokenMinuteData.low = tokenPrice
+  }
+
+  tokenMinuteData.close = tokenPrice
+  tokenMinuteData.priceUSD = tokenPrice
+  tokenMinuteData.totalValueLocked = token.totalValueLocked
+  tokenMinuteData.totalValueLockedUSD = token.totalValueLockedUSD
+  tokenMinuteData.save()
+
+  return tokenMinuteData as TokenMinuteData
 }
