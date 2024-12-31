@@ -154,7 +154,7 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
     token1.totalValueLockedUSD = token1.totalValueLocked.times(token1.derivedIP).times(bundle.IPPriceUSD)
 
     // create Swap event
-    const transaction = loadTransaction(event)
+    const transaction = loadTransaction(event, pool)
     const swap = new Swap(transaction.id + '-' + event.logIndex.toString())
     swap.transaction = transaction.id
     swap.timestamp = transaction.timestamp

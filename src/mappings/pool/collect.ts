@@ -28,7 +28,7 @@ export function handleCollectHelper(event: CollectEvent, subgraphConfig: Subgrap
   if (pool == null) {
     return
   }
-  const transaction = loadTransaction(event)
+  const transaction = loadTransaction(event, pool)
   const factory = Factory.load(factoryAddress)!
 
   const token0 = Token.load(pool.token0)
