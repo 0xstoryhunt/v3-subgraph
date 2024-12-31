@@ -83,6 +83,8 @@ type Token @entity {
   tokenDayData: [TokenDayData!]! @derivedFrom(field: "token")
   TokenHourData: [TokenHourData!]! @derivedFrom(field: "token")
   TokenMinuteData: [TokenMinuteData!]! @derivedFrom(field: "token")
+  # neighbours token for swap routing
+  neighbour: [Token!]!
 }
 
 type Pool @entity {

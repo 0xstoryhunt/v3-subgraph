@@ -86,6 +86,7 @@ export function handlePoolCreatedHelper(
     token0.txCount = ZERO_BI
     token0.poolCount = ZERO_BI
     token0.whitelistPools = []
+    token0.neighbour = []
   }
 
   if (token1 === null) {
@@ -110,6 +111,7 @@ export function handlePoolCreatedHelper(
     token1.txCount = ZERO_BI
     token1.poolCount = ZERO_BI
     token1.whitelistPools = []
+    token1.neighbour = []
   }
 
   // update white listed pools
@@ -156,6 +158,11 @@ export function handlePoolCreatedHelper(
   pool.save()
   // create the tracked contract based on the template
   PoolTemplate.create(event.params.pool)
+  token0.poolCount = token0.poolCount.plus(ONE_BI)
+  token1.poolCount = token1.poolCount.plus(ONE_BI)
+  token0.neighbour = token0.neighbour.includes(token1.id) ? token0.neighbour : token0.neighbour.concat([token1.id])
+  token1.neighbour = token1.neighbour.includes(token0.id) ? token1.neighbour : token1.neighbour.concat([token0.id])
+
   token0.save()
   token1.save()
   factory.save()
