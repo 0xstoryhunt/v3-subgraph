@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
-import { Transaction } from '../types/schema'
+import { Pool, Transaction } from '../types/schema'
 import { ONE_BD, ZERO_BD, ZERO_BI } from '../utils/constants'
 
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
@@ -98,7 +98,7 @@ export function convertIPToDecimal(IP: BigInt): BigDecimal {
   return IP.toBigDecimal().div(exponentToBigDecimal(18))
 }
 
-export function loadTransaction(event: ethereum.Event): Transaction {
+export function loadTransaction(event: ethereum.Event, pool: Pool): Transaction {
   let transaction = Transaction.load(event.transaction.hash.toHexString())
   if (transaction === null) {
     transaction = new Transaction(event.transaction.hash.toHexString())
@@ -107,6 +107,8 @@ export function loadTransaction(event: ethereum.Event): Transaction {
   transaction.timestamp = event.block.timestamp
   transaction.gasUsed = BigInt.zero() //needs to be moved to transaction receipt
   transaction.gasPrice = event.transaction.gasPrice
+  transaction.pool = pool.id
+  transaction.from = event.transaction.from.toHexString()
   transaction.save()
   return transaction as Transaction
 }

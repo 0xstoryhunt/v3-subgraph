@@ -7,7 +7,7 @@ import {
   NonfungiblePositionManager,
   Transfer,
 } from '../types/NonfungiblePositionManager/NonfungiblePositionManager'
-import { Position, PositionSnapshot, Token } from '../types/schema'
+import { Pool, Position, PositionSnapshot, Token } from '../types/schema'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
 import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI } from '../utils/constants'
 
@@ -45,7 +45,7 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
         position.withdrawnToken1 = ZERO_BD
         position.collectedFeesToken0 = ZERO_BD
         position.collectedFeesToken1 = ZERO_BD
-        position.transaction = loadTransaction(event).id
+        position.transaction = loadTransaction(event, Pool.load(position.pool)!).id
         position.feeGrowthInside0LastX128 = positionResult.value8
         position.feeGrowthInside1LastX128 = positionResult.value9
       }
@@ -76,7 +76,7 @@ function savePositionSnapshot(position: Position, event: ethereum.Event): void {
   positionSnapshot.withdrawnToken1 = position.withdrawnToken1
   positionSnapshot.collectedFeesToken0 = position.collectedFeesToken0
   positionSnapshot.collectedFeesToken1 = position.collectedFeesToken1
-  positionSnapshot.transaction = loadTransaction(event).id
+  positionSnapshot.transaction = loadTransaction(event, Pool.load(position.pool)!).id
   positionSnapshot.feeGrowthInside0LastX128 = position.feeGrowthInside0LastX128
   positionSnapshot.feeGrowthInside1LastX128 = position.feeGrowthInside1LastX128
   positionSnapshot.save()

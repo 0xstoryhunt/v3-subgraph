@@ -78,7 +78,7 @@ export function handleMintHelper(event: MintEvent, subgraphConfig: SubgraphConfi
     factory.totalValueLockedIP = factory.totalValueLockedIP.plus(pool.totalValueLockedIP)
     factory.totalValueLockedUSD = factory.totalValueLockedIP.times(bundle.IPPriceUSD)
 
-    const transaction = loadTransaction(event)
+    const transaction = loadTransaction(event, pool)
     const mint = new Mint(transaction.id.toString() + '-' + event.logIndex.toString())
     mint.transaction = transaction.id
     mint.timestamp = transaction.timestamp
