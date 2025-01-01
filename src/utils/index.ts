@@ -98,7 +98,7 @@ export function convertIPToDecimal(IP: BigInt): BigDecimal {
   return IP.toBigDecimal().div(exponentToBigDecimal(18))
 }
 
-export function loadTransaction(event: ethereum.Event, pool: Pool): Transaction {
+export function loadTransaction(event: ethereum.Event, poolId: String): Transaction {
   let transaction = Transaction.load(event.transaction.hash.toHexString())
   if (transaction === null) {
     transaction = new Transaction(event.transaction.hash.toHexString())
@@ -107,7 +107,7 @@ export function loadTransaction(event: ethereum.Event, pool: Pool): Transaction 
   transaction.timestamp = event.block.timestamp
   transaction.gasUsed = BigInt.zero() //needs to be moved to transaction receipt
   transaction.gasPrice = event.transaction.gasPrice
-  transaction.pool = pool.id
+  transaction.poolId = poolId
   transaction.from = event.transaction.from.toHexString()
   transaction.save()
   return transaction as Transaction

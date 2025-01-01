@@ -62,7 +62,7 @@ export function handleBurnHelper(event: BurnEvent, subgraphConfig: SubgraphConfi
     }
 
     // burn entity
-    const transaction = loadTransaction(event, pool)
+    const transaction = loadTransaction(event, pool.id)
     const burn = new Burn(transaction.id + '-' + event.logIndex.toString())
     burn.transaction = transaction.id
     burn.timestamp = transaction.timestamp
