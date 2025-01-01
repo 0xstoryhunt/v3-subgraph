@@ -265,8 +265,8 @@ type Transaction @entity {
   swaps: [Swap]! @derivedFrom(field: "transaction")
   flashed: [Flash]! @derivedFrom(field: "transaction")
   collects: [Collect]! @derivedFrom(field: "transaction")
-  pool: Pool
-  from: String
+  poolId: String!
+  from: String!
 }
 
 type Mint @entity {
