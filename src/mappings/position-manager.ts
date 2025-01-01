@@ -16,10 +16,7 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
   if (position === null) {
     const contract = NonfungiblePositionManager.bind(event.address)
     const positionCall = contract.try_positions(tokenId)
-    // the following call reverts in situations where the position is minted
-    // and deleted in the same block - from my investigation this happens
-    // in calls from  BancorSwap
-    // (e.g. 0xf7867fa19aa65298fadb8d4f72d0daed5e836f3ba01f0b9b9631cdc6c36bed40)
+    
     log.info('Processing IncreaseLiquidity for tokenId: {}', [positionCall.reverted.toString()])
 
     if (!positionCall.reverted) {

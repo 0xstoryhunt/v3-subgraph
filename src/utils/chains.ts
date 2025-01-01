@@ -80,8 +80,8 @@ export function getSubgraphConfig(): SubgraphConfig {
     }
   } else if (selectedNetwork == ODYSSEY_TESTNET_NAME) {
     return {
-      factoryAddress: '0x354631ac8fdb2d5d66Ca5809b78BCE9dda1b7973',
-      stablecoinWrappedNativePoolAddress: '0x17FE5bA94ce689096b4119d9e92c6d6783c5e152', // IP-USDC 0.05% pool
+      factoryAddress: '0x063B2dA5239BacA71fEbcD5Bdb833E0883b8F399',
+      stablecoinWrappedNativePoolAddress: '0x7e37fb2366147ecfD3dEa21f3210E28bEC463ca8', // IP-USDC 0.05% pool
       stablecoinIsToken0: false,
       wrappedNativeAddress: '0x1516000000000000000000000000000000000000', // WIP
       minimumNativeLocked: BigDecimal.fromString('1'),
