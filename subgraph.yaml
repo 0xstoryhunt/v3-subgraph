@@ -13,7 +13,7 @@ dataSources:
     source:
       abi: Factory
       address: '0x063B2dA5239BacA71fEbcD5Bdb833E0883b8F399'
-      startBlock: 1680000
+      startBlock: 1650000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -43,7 +43,7 @@ dataSources:
     source:
       address: '0xbDa5B9237F51D94e1Cf36504384206493b013eF2' # Add the contract address
       abi: NonfungiblePositionManager
-      startBlock: 1680000 # Add the start block
+      startBlock: 1650000 # Add the start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
