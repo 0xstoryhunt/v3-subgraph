@@ -1,8 +1,8 @@
 {
-  "story-odyssey-testnet": {
+  "odyssey-testnet": {
     "Factory": {
       "address": "0x063B2dA5239BacA71fEbcD5Bdb833E0883b8F399",
-      "startBlock": 1680000
+      "startBlock": 1650000
     }
   }
 }
