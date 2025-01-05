@@ -8,6 +8,27 @@ features:
   - grafting
 dataSources:
   - kind: ethereum/contract
+    name: StoryHuntTokenLaunchpad
+    network: odyssey-testnet
+    source:
+      abi: StoryHuntTokenLaunchpad
+      address: '0x13Ae6e01a6eA736e0C070aeAB312764ded729CdA'
+      startBlock: 398000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/token-launchpad.ts
+      entities:
+        - CreatedToken
+      abis:
+        - name: StoryHuntTokenLaunchpad
+          file: ./abis/StoryHuntTokenLaunchpad.json
+      eventHandlers:
+        - event: TokenCreated(indexed address,indexed address,string,string,uint256)
+          handler: handleTokenCreated
+
+  - kind: ethereum/contract
     name: Factory
     network: odyssey-testnet
     source:
