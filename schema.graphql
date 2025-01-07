@@ -153,6 +153,10 @@ type Pool @entity {
   collects: [Collect!]! @derivedFrom(field: "pool")
   ticks: [Tick!]! @derivedFrom(field: "pool")
   from: String
+  feesIP: BigDecimal!
+  feeAPRUSD: BigDecimal! 
+  feeAPRIP: BigDecimal! 
+  lmPool: LMPool
 }
 
 type Tick @entity {
@@ -213,6 +217,11 @@ type Position @entity {
   # vars needed for fee computation
   feeGrowthInside0LastX128: BigInt!
   feeGrowthInside1LastX128: BigInt!
+  tickLowerInt: BigInt
+  tickUpperInt: BigInt
+  lmPool: LMPool
+  earned: BigInt!
+  isStaked: Boolean!
 }
 
 type PositionSnapshot @entity {
@@ -614,4 +623,58 @@ type TokenMinuteData @entity {
   low: BigDecimal!
   # close price USD
   close: BigDecimal!
+}
+
+type MasterChef @entity {
+  # Contract address
+  id: ID!
+  totalAllocPoint: BigInt!
+  undistributedCake: BigInt!
+  lastHarvestBlock: BigInt!
+  latestPeriodStartTime: BigInt!
+  latestPeriodEndTime: BigInt!
+  latestPeriodCakePerSecond: BigInt!
+  latestPeriodCakeAmount: BigInt!
+  periodDuration: BigInt!
+  poolCount: BigInt!
+  timestamp: BigInt!
+  block: BigInt!
+}
+
+type LMPool @entity {
+  id: ID! # LM Pool address
+  pool: Pool! # Reference to associated V3 Pool
+  rewardToken: Token! # Reward token distributed
+  rewardRate: BigDecimal! # Rewards per second
+  allocPoint: BigInt! # Allocation points
+  stakedLiquidity: BigDecimal! # Total staked liquidity
+  stakedLiquidityUSD: BigDecimal! # Staked liquidity in USD
+  tvl: BigDecimal! # Total Value Locked (native token units)
+  tvlUSD: BigDecimal! # Total Value Locked (USD)
+  volume: BigDecimal! # Total volume in token units
+  volumeUSD: BigDecimal! # Total volume in USD
+  apr: BigDecimal! # Annual Percentage Rate (APR)
+  rewardPeriods: [RewardPeriod!]! @derivedFrom(field: "pool")
+  lmTransactions: [LMTransaction!]! @derivedFrom(field: "pool")
+  masterChef: MasterChef
+  totalUsersCount: BigInt
+  userCount: BigInt
+}
+
+type RewardPeriod @entity {
+  id: ID! # Reward period identifier
+  pool: LMPool! # Reference to the LM Pool
+  rewardRate: BigDecimal! # Reward rate during this period
+  startTime: BigInt! # Start timestamp
+  endTime: BigInt! # End timestamp
+}
+
+type LMTransaction @entity {
+  id: ID! # Unique transaction ID
+  type: String! # "Deposit", "Withdraw", "Harvest"
+  user: Bytes! # User address
+  pool: LMPool! # Reference to LM Pool
+  amount: BigDecimal! # Liquidity deposited or withdrawn
+  reward: BigDecimal! # Rewards harvested
+  timestamp: BigInt! # Transaction timestamp
 }
