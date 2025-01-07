@@ -146,12 +146,15 @@ export function handlePoolCreatedHelper(
   pool.volumeToken0 = ZERO_BD
   pool.volumeToken1 = ZERO_BD
   pool.volumeUSD = ZERO_BD
+  pool.feesIP = ZERO_BD
   pool.feesUSD = ZERO_BD
   pool.untrackedVolumeUSD = ZERO_BD
 
   pool.collectedFeesToken0 = ZERO_BD
   pool.collectedFeesToken1 = ZERO_BD
   pool.collectedFeesUSD = ZERO_BD
+  pool.feeAPRIP = ZERO_BD
+  pool.feeAPRUSD = ZERO_BD
 
   pool.from = event.transaction.from.toHexString()
 

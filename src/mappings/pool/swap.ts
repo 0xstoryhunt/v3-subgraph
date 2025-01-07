@@ -4,7 +4,7 @@ import { Bundle, Factory, Pool, Swap, Token } from '../../types/schema'
 import { Swap as SwapEvent } from '../../types/templates/Pool/Pool'
 import { convertTokenToDecimal, loadTransaction, safeDiv } from '../../utils'
 import { getSubgraphConfig, SubgraphConfig } from '../../utils/chains'
-import { ONE_BI, ZERO_BD } from '../../utils/constants'
+import { ONE_BI, SECONDS_PER_YEAR, ZERO_BD } from '../../utils/constants'
 import {
   updatePoolDayData,
   updatePoolHourData,
@@ -91,6 +91,7 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
     pool.volumeToken1 = pool.volumeToken1.plus(amount1Abs)
     pool.volumeUSD = pool.volumeUSD.plus(amountTotalUSDTracked)
     pool.untrackedVolumeUSD = pool.untrackedVolumeUSD.plus(amountTotalUSDUntracked)
+    pool.feesIP = pool.feesIP.plus(feesIP)
     pool.feesUSD = pool.feesUSD.plus(feesUSD)
     pool.txCount = pool.txCount.plus(ONE_BI)
 
@@ -146,6 +147,11 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
       .times(token0.derivedIP)
       .plus(pool.totalValueLockedToken1.times(token1.derivedIP))
     pool.totalValueLockedUSD = pool.totalValueLockedIP.times(bundle.IPPriceUSD)
+
+    let timeElapsed = event.block.timestamp.minus(pool.createdAtTimestamp)
+    let annualizedFees = safeDiv(feesIP.times(SECONDS_PER_YEAR), timeElapsed.toBigDecimal())
+    pool.feeAPRIP = safeDiv(annualizedFees, pool.totalValueLockedIP).times(BigDecimal.fromString('100'))
+    pool.feeAPRUSD = safeDiv(annualizedFees, pool.totalValueLockedIP).times(BigDecimal.fromString('100'))
 
     factory.totalValueLockedIP = factory.totalValueLockedIP.plus(pool.totalValueLockedIP)
     factory.totalValueLockedUSD = factory.totalValueLockedIP.times(bundle.IPPriceUSD)

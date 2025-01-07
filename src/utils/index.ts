@@ -1,6 +1,6 @@
-import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
-import { Pool, Transaction } from '../types/schema'
+import { Bundle, Token, Transaction } from '../types/schema'
 import { ONE_BD, ZERO_BD, ZERO_BI } from '../utils/constants'
 
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
@@ -111,4 +111,14 @@ export function loadTransaction(event: ethereum.Event, poolId: String): Transact
   transaction.from = event.transaction.from.toHexString()
   transaction.save()
   return transaction as Transaction
+}
+
+export function getTokenPriceUSD(tokenAddress: Address): BigDecimal {
+  let token = Token.load(tokenAddress.toHexString());
+  if (!token || token.derivedIP == ZERO_BD) return ZERO_BD;
+
+  let bundle = Bundle.load("1"); // Bundle ID is typically "1"
+  if (!bundle || bundle.IPPriceUSD == ZERO_BD) return ZERO_BD;
+
+  return token.derivedIP.times(bundle.IPPriceUSD);
 }
