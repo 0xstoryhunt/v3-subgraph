@@ -625,7 +625,7 @@ type TokenMinuteData @entity {
   close: BigDecimal!
 }
 
-type MasterChef @entity {
+type AlphaHunter @entity {
   # Contract address
   id: ID!
   totalAllocPoint: BigInt!
@@ -656,7 +656,7 @@ type LMPool @entity {
   apr: BigDecimal! # Annual Percentage Rate (APR)
   rewardPeriods: [RewardPeriod!]! @derivedFrom(field: "pool")
   lmTransactions: [LMTransaction!]! @derivedFrom(field: "pool")
-  masterChef: MasterChef
+  alphaHunter: AlphaHunter
   totalUsersCount: BigInt
   userCount: BigInt
 }
@@ -667,6 +667,7 @@ type RewardPeriod @entity {
   rewardRate: BigDecimal! # Reward rate during this period
   startTime: BigInt! # Start timestamp
   endTime: BigInt! # End timestamp
+  token: Token! # Reward Token
 }
 
 type LMTransaction @entity {
@@ -676,5 +677,6 @@ type LMTransaction @entity {
   pool: LMPool! # Reference to LM Pool
   amount: BigDecimal! # Liquidity deposited or withdrawn
   reward: BigDecimal! # Rewards harvested
+  token: Token! # Reward Token
   timestamp: BigInt! # Transaction timestamp
 }

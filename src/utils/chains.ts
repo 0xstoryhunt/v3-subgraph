@@ -81,16 +81,16 @@ export function getSubgraphConfig(): SubgraphConfig {
   } else if (selectedNetwork == ODYSSEY_TESTNET_NAME) {
     return {
       factoryAddress: '0x6A76afC7417fd6A57fEAe35fB53Fd51eDc08C1ba',
-      stablecoinWrappedNativePoolAddress: '0xC7024bf23Edd866bBF469D4C109A1b51848920Fa', // IP-USDC 0.05% pool
+      stablecoinWrappedNativePoolAddress: '0xc7024bf23edd866bbf469d4c109a1b51848920fa', // WIP-USDC 0.05% pool
       stablecoinIsToken0: false,
       wrappedNativeAddress: '0x1516000000000000000000000000000000000000', // WIP
       minimumNativeLocked: BigDecimal.fromString('1'),
       stablecoinAddresses: [
-        '0xF1815bd50389c46847f0Bda824eC8da914045D14', // USDC
+        '0xf1815bd50389c46847f0bda824ec8da914045d14', // USDC
       ],
       whitelistTokens: [
         '0x1516000000000000000000000000000000000000', //WIP
-        '0xF1815bd50389c46847f0Bda824eC8da914045D14', //USDC
+        '0xf1815bd50389c46847f0bda824ec8da914045d14', //USDC
         '0x181c610790F508F281b48Ca29ddc1DFfff9B0D80', //FATE
       ],
       tokenOverrides: [],

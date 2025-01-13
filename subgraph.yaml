@@ -13,7 +13,7 @@ dataSources:
     source:
       abi: StoryHuntTokenLaunchpad
       address: '0x13Ae6e01a6eA736e0C070aeAB312764ded729CdA'
-      startBlock: 398000
+      startBlock: 1850000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -94,38 +94,38 @@ dataSources:
           handler: handleTransfer
 
   - kind: ethereum/contract
-    name: MasterChefV3
+    name: AlphaHunterV3
     network: odyssey-testnet
     source:
-      address: '0xD7021edbC7e6a0CBB343Eb0806CC624F492e07b6' # Replace with the MasterChefV3 address
-      abi: MasterChefV3
+      address: '0xE684381b9B35AC4EB1Fd7D4ba9a31d42014f08dA'
+      abi: AlphaHunterV3
       startBlock: 1650000 # Replace with the correct start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/mappings/lm/masterchef.ts
+      file: ./src/mappings/lm/alphahunter.ts
       entities:
         - LMPool
         - RewardPeriod
         - LMTransaction
       abis:
-        - name: MasterChefV3
-          file: ./abis/MasterChefV3.json
+        - name: AlphaHunterV3
+          file: ./abis/AlphaHunterV3.json
       eventHandlers:
         - event: AddPool(indexed uint256,uint256,indexed address,indexed address)
           handler: handleAddPool
         - event: Deposit(indexed address,indexed uint256,indexed uint256,uint256,int24,int24)
           handler: handleDeposit
-        - event: Harvest(indexed address,address,indexed uint256,indexed uint256,uint256)
+        - event: Harvest(indexed address,address,address,indexed uint256,indexed uint256,uint256)
           handler: handleHarvest
-        - event: NewUpkeepPeriod(indexed uint256,uint256,uint256,uint256,uint256)
+        - event: NewUpkeepPeriod(indexed address,indexed uint256,uint256,uint256,uint256,uint256)
           handler: handleNewUpkeepPeriod
         - event: SetPool(indexed uint256,uint256)
           handler: handleSetPool
         - event: UpdateLiquidity(indexed address,indexed uint256,indexed uint256,int128,int24,int24)
           handler: handleUpdateLiquidity
-        - event: UpdateUpkeepPeriod(indexed uint256,uint256,uint256,uint256)
+        - event: UpdateUpkeepPeriod(indexed address,indexed uint256,uint256,uint256,uint256)
           handler: handleUpdateUpkeepPeriod
         - event: Withdraw(indexed address,address,indexed uint256,indexed uint256)
           handler: handleWithdraw

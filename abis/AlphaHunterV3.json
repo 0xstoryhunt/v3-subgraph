@@ -1,0 +1,1140 @@
+[
+    {
+      "type": "constructor",
+      "inputs": [
+        {
+          "name": "_rewardTokens",
+          "type": "address[]",
+          "internalType": "address[]"
+        },
+        {
+          "name": "_nonfungiblePositionManager",
+          "type": "address",
+          "internalType": "contract INonfungiblePositionManager"
+        },
+        { "name": "_WETH", "type": "address", "internalType": "address" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    { "type": "receive", "stateMutability": "payable" },
+    {
+      "type": "function",
+      "name": "BOOST_PRECISION",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "FARM_BOOSTER",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "contract IFarmBooster"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "LMPoolDeployer",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "contract ILMPoolDeployer"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "MAX_BOOST_PRECISION",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "MAX_DURATION",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "MIN_DURATION",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PERIOD_DURATION",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PRECISION",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "WETH",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "add",
+      "inputs": [
+        { "name": "_allocPoint", "type": "uint256", "internalType": "uint256" },
+        {
+          "name": "_v3Pool",
+          "type": "address",
+          "internalType": "contract IStoryHuntV3Pool"
+        },
+        { "name": "_withUpdate", "type": "bool", "internalType": "bool" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "balanceOf",
+      "inputs": [
+        { "name": "owner", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "burn",
+      "inputs": [
+        { "name": "_tokenId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "collect",
+      "inputs": [
+        {
+          "name": "params",
+          "type": "tuple",
+          "internalType": "struct INonfungiblePositionManagerStruct.CollectParams",
+          "components": [
+            { "name": "tokenId", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount0Max",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "amount1Max",
+              "type": "uint128",
+              "internalType": "uint128"
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        { "name": "amount0", "type": "uint256", "internalType": "uint256" },
+        { "name": "amount1", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "collectTo",
+      "inputs": [
+        {
+          "name": "params",
+          "type": "tuple",
+          "internalType": "struct INonfungiblePositionManagerStruct.CollectParams",
+          "components": [
+            { "name": "tokenId", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "recipient",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "amount0Max",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "amount1Max",
+              "type": "uint128",
+              "internalType": "uint128"
+            }
+          ]
+        },
+        { "name": "to", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [
+        { "name": "amount0", "type": "uint256", "internalType": "uint256" },
+        { "name": "amount1", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "decreaseLiquidity",
+      "inputs": [
+        {
+          "name": "params",
+          "type": "tuple",
+          "internalType": "struct INonfungiblePositionManagerStruct.DecreaseLiquidityParams",
+          "components": [
+            { "name": "tokenId", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "liquidity",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "amount0Min",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount1Min",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "deadline", "type": "uint256", "internalType": "uint256" }
+          ]
+        }
+      ],
+      "outputs": [
+        { "name": "amount0", "type": "uint256", "internalType": "uint256" },
+        { "name": "amount1", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "emergency",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getLatestPeriodInfo",
+      "inputs": [
+        { "name": "_token", "type": "address", "internalType": "address" },
+        { "name": "_v3Pool", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [
+        {
+          "name": "rewardPerSecond",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "endTime", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getLatestPeriodInfoByPid",
+      "inputs": [
+        { "name": "_token", "type": "address", "internalType": "address" },
+        { "name": "_pid", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        {
+          "name": "rewardPerSecond",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "endTime", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getRewardTokens",
+      "inputs": [],
+      "outputs": [
+        { "name": "tokens", "type": "address[]", "internalType": "address[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "harvest",
+      "inputs": [
+        { "name": "_token", "type": "address", "internalType": "address" },
+        { "name": "_tokenId", "type": "uint256", "internalType": "uint256" },
+        { "name": "_to", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [
+        { "name": "reward", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "increaseLiquidity",
+      "inputs": [
+        {
+          "name": "params",
+          "type": "tuple",
+          "internalType": "struct INonfungiblePositionManagerStruct.IncreaseLiquidityParams",
+          "components": [
+            { "name": "tokenId", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "amount0Desired",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount1Desired",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount0Min",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "amount1Min",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "deadline", "type": "uint256", "internalType": "uint256" }
+          ]
+        }
+      ],
+      "outputs": [
+        { "name": "liquidity", "type": "uint128", "internalType": "uint128" },
+        { "name": "amount0", "type": "uint256", "internalType": "uint256" },
+        { "name": "amount1", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "multicall",
+      "inputs": [
+        { "name": "data", "type": "bytes[]", "internalType": "bytes[]" }
+      ],
+      "outputs": [
+        { "name": "results", "type": "bytes[]", "internalType": "bytes[]" }
+      ],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "nonfungiblePositionManager",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "contract INonfungiblePositionManager"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "onERC721Received",
+      "inputs": [
+        { "name": "", "type": "address", "internalType": "address" },
+        { "name": "_from", "type": "address", "internalType": "address" },
+        { "name": "_tokenId", "type": "uint256", "internalType": "uint256" },
+        { "name": "", "type": "bytes", "internalType": "bytes" }
+      ],
+      "outputs": [{ "name": "", "type": "bytes4", "internalType": "bytes4" }],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "operatorAddress",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "owner",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "pendingReward",
+      "inputs": [
+        { "name": "_token", "type": "address", "internalType": "address" },
+        { "name": "_tokenId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        { "name": "reward", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "poolInfo",
+      "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [
+        {
+          "name": "v3Pool",
+          "type": "address",
+          "internalType": "contract IStoryHuntV3Pool"
+        },
+        { "name": "token0", "type": "address", "internalType": "address" },
+        { "name": "token1", "type": "address", "internalType": "address" },
+        { "name": "fee", "type": "uint24", "internalType": "uint24" },
+        {
+          "name": "totalLiquidity",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "totalBoostLiquidity",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "poolLength",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "receiver",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "renounceOwnership",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "rewardInfos",
+      "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "outputs": [
+        { "name": "token", "type": "address", "internalType": "address" },
+        {
+          "name": "totalAllocPoint",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "rewardAmountBelongToMC",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "latestPeriodNumber",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "latestPeriodStartTime",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "latestPeriodEndTime",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "latestPeriodRewardPerSecond",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "rewardTokens",
+      "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "set",
+      "inputs": [
+        { "name": "_pid", "type": "uint256", "internalType": "uint256" },
+        { "name": "_allocPoint", "type": "uint256", "internalType": "uint256" },
+        { "name": "_withUpdate", "type": "bool", "internalType": "bool" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "setEmergency",
+      "inputs": [
+        { "name": "_emergency", "type": "bool", "internalType": "bool" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "setLMPoolDeployer",
+      "inputs": [
+        {
+          "name": "_LMPoolDeployer",
+          "type": "address",
+          "internalType": "contract ILMPoolDeployer"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "setOperator",
+      "inputs": [
+        {
+          "name": "_operatorAddress",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "setPeriodDuration",
+      "inputs": [
+        {
+          "name": "_periodDuration",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "setReceiver",
+      "inputs": [
+        { "name": "_receiver", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "setRewardTokens",
+      "inputs": [
+        { "name": "_tokens", "type": "address[]", "internalType": "address[]" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "sweepToken",
+      "inputs": [
+        { "name": "token", "type": "address", "internalType": "address" },
+        {
+          "name": "amountMinimum",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "recipient", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "tokenOfOwnerByIndex",
+      "inputs": [
+        { "name": "owner", "type": "address", "internalType": "address" },
+        { "name": "index", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "transferOwnership",
+      "inputs": [
+        { "name": "newOwner", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "unwrapWETH9",
+      "inputs": [
+        {
+          "name": "amountMinimum",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "recipient", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "updateBoostMultiplier",
+      "inputs": [
+        { "name": "_tokenId", "type": "uint256", "internalType": "uint256" },
+        {
+          "name": "_newMultiplier",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "updateFarmBoostContract",
+      "inputs": [
+        {
+          "name": "_newFarmBoostContract",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "updateLiquidity",
+      "inputs": [
+        { "name": "_tokenId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "updatePools",
+      "inputs": [
+        { "name": "pids", "type": "uint256[]", "internalType": "uint256[]" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "upkeep",
+      "inputs": [
+        { "name": "_token", "type": "address", "internalType": "address" },
+        { "name": "_amount", "type": "uint256", "internalType": "uint256" },
+        { "name": "_duration", "type": "uint256", "internalType": "uint256" },
+        { "name": "_withUpdate", "type": "bool", "internalType": "bool" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "userPositionInfos",
+      "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [
+        { "name": "liquidity", "type": "uint128", "internalType": "uint128" },
+        {
+          "name": "boostLiquidity",
+          "type": "uint128",
+          "internalType": "uint128"
+        },
+        { "name": "tickLower", "type": "int24", "internalType": "int24" },
+        { "name": "tickUpper", "type": "int24", "internalType": "int24" },
+        { "name": "user", "type": "address", "internalType": "address" },
+        { "name": "pid", "type": "uint256", "internalType": "uint256" },
+        {
+          "name": "boostMultiplier",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "userPositionRewards",
+      "inputs": [
+        { "name": "", "type": "uint256", "internalType": "uint256" },
+        { "name": "", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [
+        {
+          "name": "rewardGrowthInside",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "reward", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "v3PoolAddressPid",
+      "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "withdraw",
+      "inputs": [
+        { "name": "_tokenId", "type": "uint256", "internalType": "uint256" },
+        { "name": "_to", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [
+        { "name": "reward", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "event",
+      "name": "AddPool",
+      "inputs": [
+        {
+          "name": "pid",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "allocPoint",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "v3Pool",
+          "type": "address",
+          "indexed": true,
+          "internalType": "contract IStoryHuntV3Pool"
+        },
+        {
+          "name": "lmPool",
+          "type": "address",
+          "indexed": true,
+          "internalType": "contract ILMPool"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Deposit",
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "pid",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "tokenId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "liquidity",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "tickLower",
+          "type": "int24",
+          "indexed": false,
+          "internalType": "int24"
+        },
+        {
+          "name": "tickUpper",
+          "type": "int24",
+          "indexed": false,
+          "internalType": "int24"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Harvest",
+      "inputs": [
+        {
+          "name": "sender",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "to",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        },
+        {
+          "name": "token",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        },
+        {
+          "name": "pid",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "tokenId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "reward",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "NewLMPoolDeployerAddress",
+      "inputs": [
+        {
+          "name": "deployer",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "NewOperatorAddress",
+      "inputs": [
+        {
+          "name": "operator",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "NewPeriodDuration",
+      "inputs": [
+        {
+          "name": "periodDuration",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "NewReceiver",
+      "inputs": [
+        {
+          "name": "receiver",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "NewUpkeepPeriod",
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "periodNumber",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "startTime",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "endTime",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "huntPerSecond",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "huntAmount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "OwnershipTransferred",
+      "inputs": [
+        {
+          "name": "previousOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "newOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "SetEmergency",
+      "inputs": [
+        {
+          "name": "emergency",
+          "type": "bool",
+          "indexed": false,
+          "internalType": "bool"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "SetPool",
+      "inputs": [
+        {
+          "name": "pid",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "allocPoint",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "UpdateFarmBoostContract",
+      "inputs": [
+        {
+          "name": "farmBoostContract",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "UpdateLiquidity",
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "pid",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "tokenId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "liquidity",
+          "type": "int128",
+          "indexed": false,
+          "internalType": "int128"
+        },
+        {
+          "name": "tickLower",
+          "type": "int24",
+          "indexed": false,
+          "internalType": "int24"
+        },
+        {
+          "name": "tickUpper",
+          "type": "int24",
+          "indexed": false,
+          "internalType": "int24"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "UpdateUpkeepPeriod",
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "periodNumber",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "oldEndTime",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "newEndTime",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "remainingHunt",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Withdraw",
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "to",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        },
+        {
+          "name": "pid",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "tokenId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "error",
+      "name": "DuplicatedPool",
+      "inputs": [
+        { "name": "pid", "type": "uint256", "internalType": "uint256" }
+      ]
+    },
+    { "type": "error", "name": "InconsistentAmount", "inputs": [] },
+    { "type": "error", "name": "InsufficientAmount", "inputs": [] },
+    { "type": "error", "name": "InvalidNFT", "inputs": [] },
+    { "type": "error", "name": "InvalidPeriodDuration", "inputs": [] },
+    { "type": "error", "name": "InvalidPid", "inputs": [] },
+    { "type": "error", "name": "NoBalance", "inputs": [] },
+    { "type": "error", "name": "NoLMPool", "inputs": [] },
+    { "type": "error", "name": "NoLiquidity", "inputs": [] },
+    { "type": "error", "name": "NotEmpty", "inputs": [] },
+    { "type": "error", "name": "NotOwner", "inputs": [] },
+    { "type": "error", "name": "NotOwnerOrOperator", "inputs": [] },
+    { "type": "error", "name": "NotStoryHuntNFT", "inputs": [] },
+    { "type": "error", "name": "WrongReceiver", "inputs": [] },
+    { "type": "error", "name": "ZeroAddress", "inputs": [] }
+  ]

@@ -150,8 +150,9 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
 
     let timeElapsed = event.block.timestamp.minus(pool.createdAtTimestamp)
     let annualizedFees = safeDiv(feesIP.times(SECONDS_PER_YEAR), timeElapsed.toBigDecimal())
+    let annualizedFeesUSD = safeDiv(feesUSD.times(SECONDS_PER_YEAR), timeElapsed.toBigDecimal())
     pool.feeAPRIP = safeDiv(annualizedFees, pool.totalValueLockedIP).times(BigDecimal.fromString('100'))
-    pool.feeAPRUSD = safeDiv(annualizedFees, pool.totalValueLockedIP).times(BigDecimal.fromString('100'))
+    pool.feeAPRUSD = safeDiv(annualizedFeesUSD, pool.totalValueLockedUSD).times(BigDecimal.fromString('100'))
 
     factory.totalValueLockedIP = factory.totalValueLockedIP.plus(pool.totalValueLockedIP)
     factory.totalValueLockedUSD = factory.totalValueLockedIP.times(bundle.IPPriceUSD)
