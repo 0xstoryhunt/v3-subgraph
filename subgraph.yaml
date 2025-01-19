@@ -97,7 +97,7 @@ dataSources:
     name: AlphaHunterV3
     network: odyssey-testnet
     source:
-      address: '0xE684381b9B35AC4EB1Fd7D4ba9a31d42014f08dA'
+      address: '0xDCf82E9ebB881e8dBA71DA256cB60Ea927F8C317'
       abi: AlphaHunterV3
       startBlock: 1650000 # Replace with the correct start block
     mapping:
@@ -107,7 +107,6 @@ dataSources:
       file: ./src/mappings/lm/alphahunter.ts
       entities:
         - LMPool
-        - RewardPeriod
         - LMTransaction
       abis:
         - name: AlphaHunterV3

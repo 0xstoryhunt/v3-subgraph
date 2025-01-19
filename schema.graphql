@@ -220,8 +220,16 @@ type Position @entity {
   tickLowerInt: BigInt
   tickUpperInt: BigInt
   lmPool: LMPool
-  earned: BigInt!
+  staker: Bytes
   isStaked: Boolean!
+  rewards: [PositionReward!] @derivedFrom(field: "position")
+}
+
+type PositionReward @entity {
+  id: ID! # position.id + token
+  position: Position!
+  token: Token! # Reward token address
+  earned: BigDecimal! # Accumulated reward amount for the token
 }
 
 type PositionSnapshot @entity {
@@ -629,23 +637,31 @@ type AlphaHunter @entity {
   # Contract address
   id: ID!
   totalAllocPoint: BigInt!
-  undistributedCake: BigInt!
-  lastHarvestBlock: BigInt!
-  latestPeriodStartTime: BigInt!
-  latestPeriodEndTime: BigInt!
-  latestPeriodCakePerSecond: BigInt!
-  latestPeriodCakeAmount: BigInt!
-  periodDuration: BigInt!
-  poolCount: BigInt!
+  rewardPeriods: [RewardPeriod!]! @derivedFrom(field: "alphaHunter")
   timestamp: BigInt!
   block: BigInt!
 }
 
+type RewardToken @entity {
+  id: ID! # token + periodNumber
+  rewardPeriod: RewardPeriod!
+  token: Token! # Reward token address
+  rewardRate: BigDecimal!
+  startTime: BigInt!
+  endTime: BigInt!
+}
+
+type RewardPeriod @entity {
+  id: ID! # Reward period identifier
+  periodNumber: BigInt!
+  alphaHunter: AlphaHunter! # Reference to the AlphaHunter
+  rewardTokens: [RewardToken!]! @derivedFrom(field: "rewardPeriod")
+}
+
+
 type LMPool @entity {
   id: ID! # LM Pool address
   pool: Pool! # Reference to associated V3 Pool
-  rewardToken: Token! # Reward token distributed
-  rewardRate: BigDecimal! # Rewards per second
   allocPoint: BigInt! # Allocation points
   stakedLiquidity: BigDecimal! # Total staked liquidity
   stakedLiquidityUSD: BigDecimal! # Staked liquidity in USD
@@ -653,21 +669,10 @@ type LMPool @entity {
   tvlUSD: BigDecimal! # Total Value Locked (USD)
   volume: BigDecimal! # Total volume in token units
   volumeUSD: BigDecimal! # Total volume in USD
-  apr: BigDecimal! # Annual Percentage Rate (APR)
-  rewardPeriods: [RewardPeriod!]! @derivedFrom(field: "pool")
   lmTransactions: [LMTransaction!]! @derivedFrom(field: "pool")
   alphaHunter: AlphaHunter
   totalUsersCount: BigInt
   userCount: BigInt
-}
-
-type RewardPeriod @entity {
-  id: ID! # Reward period identifier
-  pool: LMPool! # Reference to the LM Pool
-  rewardRate: BigDecimal! # Reward rate during this period
-  startTime: BigInt! # Start timestamp
-  endTime: BigInt! # End timestamp
-  token: Token! # Reward Token
 }
 
 type LMTransaction @entity {
@@ -676,7 +681,7 @@ type LMTransaction @entity {
   user: Bytes! # User address
   pool: LMPool! # Reference to LM Pool
   amount: BigDecimal! # Liquidity deposited or withdrawn
-  reward: BigDecimal! # Rewards harvested
-  token: Token! # Reward Token
+  reward: BigDecimal # Rewards harvested
+  token: Token # Reward Token
   timestamp: BigInt! # Transaction timestamp
 }

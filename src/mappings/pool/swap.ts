@@ -148,11 +148,12 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
       .plus(pool.totalValueLockedToken1.times(token1.derivedIP))
     pool.totalValueLockedUSD = pool.totalValueLockedIP.times(bundle.IPPriceUSD)
 
-    let timeElapsed = event.block.timestamp.minus(pool.createdAtTimestamp)
-    let annualizedFees = safeDiv(feesIP.times(SECONDS_PER_YEAR), timeElapsed.toBigDecimal())
-    let annualizedFeesUSD = safeDiv(feesUSD.times(SECONDS_PER_YEAR), timeElapsed.toBigDecimal())
-    pool.feeAPRIP = safeDiv(annualizedFees, pool.totalValueLockedIP).times(BigDecimal.fromString('100'))
-    pool.feeAPRUSD = safeDiv(annualizedFeesUSD, pool.totalValueLockedUSD).times(BigDecimal.fromString('100'))
+    const timeElapsed = event.block.timestamp.minus(pool.createdAtTimestamp)
+    calculateFeeAPR(pool, feesIP, feesUSD, timeElapsed);
+    // let annualizedFees = safeDiv(feesIP.times(SECONDS_PER_YEAR), timeElapsed.toBigDecimal())
+    // let annualizedFeesUSD = safeDiv(feesUSD.times(SECONDS_PER_YEAR), timeElapsed.toBigDecimal())
+    // pool.feeAPRIP = safeDiv(annualizedFees, pool.totalValueLockedIP).times(BigDecimal.fromString('100'))
+    // pool.feeAPRUSD = safeDiv(annualizedFeesUSD, pool.totalValueLockedUSD).times(BigDecimal.fromString('100'))
 
     factory.totalValueLockedIP = factory.totalValueLockedIP.plus(pool.totalValueLockedIP)
     factory.totalValueLockedUSD = factory.totalValueLockedIP.times(bundle.IPPriceUSD)
@@ -250,4 +251,28 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
     token0.save()
     token1.save()
   }
+}
+
+
+function calculateFeeAPR(pool: Pool, feesIP: BigDecimal, feesUSD: BigDecimal, timeElapsed: BigInt): void {
+  const timeWindow = BigDecimal.fromString('86400'); // 1 day in seconds
+  const timeElapsedBD = timeElapsed.toBigDecimal();
+
+  // Smooth fees by averaging over a day (or another chosen window)
+  const dailyFeesIP = safeDiv(feesIP.times(timeWindow), timeElapsedBD);
+  const dailyFeesUSD = safeDiv(feesUSD.times(timeWindow), timeElapsedBD);
+
+  // Calculate annualized fees based on daily fees
+  const annualizedFeesIP = dailyFeesIP.times(BigDecimal.fromString('365'));
+  const annualizedFeesUSD = dailyFeesUSD.times(BigDecimal.fromString('365'));
+
+  // Use average liquidity to normalize APR
+  const avgLiquidityIP = safeDiv(pool.totalValueLockedIP, BigDecimal.fromString('2'));
+  const avgLiquidityUSD = safeDiv(pool.totalValueLockedUSD, BigDecimal.fromString('2'));
+
+  pool.feeAPRIP = safeDiv(annualizedFeesIP, avgLiquidityIP).times(BigDecimal.fromString('100'));
+  pool.feeAPRUSD = safeDiv(annualizedFeesUSD, avgLiquidityUSD).times(BigDecimal.fromString('100'));
+
+  // Save the pool with updated APRs
+  pool.save();
 }
