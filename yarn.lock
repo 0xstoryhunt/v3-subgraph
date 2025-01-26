@@ -541,6 +541,11 @@
   resolved "https://registry.yarnpkg.com/@rescript/std/-/std-9.0.0.tgz#df53f3fa5911cb4e85bd66b92e9e58ddf3e4a7e1"
   integrity sha512-zGzFsgtZ44mgL4Xef2gOy1hrRVdrs9mcxCOOKZrIPsmbZW14yTkaF591GXxpQvjXiHtgZ/iA9qLyWH6oSReIxQ==
 
+"@storyhunt/default-list@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@storyhunt/default-list/-/default-list-1.0.3.tgz#27f235ecc688ab4d7ec3c13eaf331bef21f4cd9e"
+  integrity sha512-0f+Xi4ImA/OBMNI/hAM5qGxgeOYvP2DEdhS23N95/9CyiCFAdlqQVwuaTcrgv/os5z6kAk6367jEHxcHPZ5SYQ==
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.11.tgz#6ee46400685f130e278128c7b38b7e031ff5b2f2"

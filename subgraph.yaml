@@ -13,7 +13,7 @@ dataSources:
     source:
       abi: StoryHuntTokenLaunchpad
       address: '0x13Ae6e01a6eA736e0C070aeAB312764ded729CdA'
-      startBlock: 1850000
+      startBlock: 620000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -33,8 +33,8 @@ dataSources:
     network: odyssey-testnet
     source:
       abi: Factory
-      address: '0x6A76afC7417fd6A57fEAe35fB53Fd51eDc08C1ba'
-      startBlock: 1650000
+      address: '0xa96Ef9BBfc361Eb0dc6aC3C788e49f1e6C2cA60d'
+      startBlock: 1950000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -62,9 +62,9 @@ dataSources:
     name: NonfungiblePositionManager
     network: odyssey-testnet
     source:
-      address: '0xe66015EFdAFc8a116B91e83d02AfB4f737835BA3' # Add the contract address
+      address: '0xDb4718A9862F4F0Ff3dBA4cBdf43182a116008aF' # Add the contract address
       abi: NonfungiblePositionManager
-      startBlock: 1650000 # Add the start block
+      startBlock: 1950000 # Add the start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -97,9 +97,9 @@ dataSources:
     name: AlphaHunterV3
     network: odyssey-testnet
     source:
-      address: '0xDCf82E9ebB881e8dBA71DA256cB60Ea927F8C317'
+      address: '0x8294cbe117dC0B5adc3Bc3052f6bB6f6C8d55900'
       abi: AlphaHunterV3
-      startBlock: 1650000 # Replace with the correct start block
+      startBlock: 1950000 # Replace with the correct start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

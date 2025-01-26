@@ -11,4 +11,4 @@ export const ONE_BD = BigDecimal.fromString('1')
 export const BI_18 = BigInt.fromI32(18)
 export const SECONDS_PER_YEAR = BigDecimal.fromString('31536000') // 365 * 24 * 60 * 60
 
-export const factoryContract = FactoryContract.bind(Address.fromString('0x6A76afC7417fd6A57fEAe35fB53Fd51eDc08C1ba'))
+export const factoryContract = FactoryContract.bind(Address.fromString('0xa96Ef9BBfc361Eb0dc6aC3C788e49f1e6C2cA60d'))
