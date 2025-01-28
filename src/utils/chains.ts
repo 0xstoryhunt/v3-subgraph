@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt, dataSource } from '@graphprotocol/graph-ts'
-import { CONSTANTS } from './constants'
+import { STABLECOIN_ADDRESSES, STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, V3_FACTORY_CONTRACT, WHITELIST_TOKEN_ADDRESSES, WIP_ADDRESS } from './constants'
 import { StaticTokenDefinition } from './staticTokenDefinition'
 
 export enum ChainId {
@@ -80,13 +80,13 @@ export function getSubgraphConfig(): SubgraphConfig {
     }
   } else if (selectedNetwork == ODYSSEY_TESTNET_NAME) {
     return {
-      factoryAddress: CONSTANTS[1516].V3_FACTORY_CONTRACT,
-      stablecoinWrappedNativePoolAddress: CONSTANTS[1516].STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, // WIP-USDC 0.05% pool
+      factoryAddress: V3_FACTORY_CONTRACT,
+      stablecoinWrappedNativePoolAddress: STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, // WIP-USDC 0.05% pool
       stablecoinIsToken0: false,
-      wrappedNativeAddress: CONSTANTS[1516].WIP_ADDRESS, // WIP
+      wrappedNativeAddress: WIP_ADDRESS, // WIP
       minimumNativeLocked: BigDecimal.fromString('1'),
-      stablecoinAddresses: CONSTANTS[1516].STABLECOIN_ADDRESSES,
-      whitelistTokens: CONSTANTS[1516].WHITELIST_TOKEN_ADDRESSES,
+      stablecoinAddresses: STABLECOIN_ADDRESSES,
+      whitelistTokens: WHITELIST_TOKEN_ADDRESSES,
       tokenOverrides: [],
       poolsToSkip: [],
       poolMappings: [],
