@@ -33,7 +33,7 @@ dataSources:
     network: odyssey-testnet
     source:
       abi: Factory
-      address: '0xa96Ef9BBfc361Eb0dc6aC3C788e49f1e6C2cA60d'
+      address: '0x45B3fBfE020cEd4F7a3d1AD8B23e3e7FC500E5e7'
       startBlock: 1950000
     mapping:
       kind: ethereum/events
@@ -62,7 +62,7 @@ dataSources:
     name: NonfungiblePositionManager
     network: odyssey-testnet
     source:
-      address: '0xDb4718A9862F4F0Ff3dBA4cBdf43182a116008aF' # Add the contract address
+      address: '0xBE6da1986c159eA87d61f03D6b820C2581018FCA' # Add the contract address
       abi: NonfungiblePositionManager
       startBlock: 1950000 # Add the start block
     mapping:
@@ -97,7 +97,7 @@ dataSources:
     name: AlphaHunterV3
     network: odyssey-testnet
     source:
-      address: '0x8294cbe117dC0B5adc3Bc3052f6bB6f6C8d55900'
+      address: '0x7DC66165b101579148bfaD7f691C30d818bc5f39'
       abi: AlphaHunterV3
       startBlock: 1950000 # Replace with the correct start block
     mapping:

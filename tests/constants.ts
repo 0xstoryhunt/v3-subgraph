@@ -6,11 +6,11 @@ import { PoolCreated } from '../src/types/Factory/Factory'
 import { Factory as FactoryContract } from '../src/types/Factory/Factory'
 import { Pool, Token } from '../src/types/schema'
 import { SubgraphConfig } from '../src/utils/chains'
-import { ADDRESS_ZERO, ZERO_BD, ZERO_BI } from '../src/utils/constants'
+import { CONSTANTS, ADDRESS_ZERO, ZERO_BD, ZERO_BI } from '../src/utils/constants'
 
-const FACTORY_ADDRESS = '0x354631ac8fdb2d5d66Ca5809b78BCE9dda1b7973'
-const USDC_MAINNET_ADDRESS = '0xF1815bd50389c46847f0Bda824eC8da914045D14'
-const WIP_MAINNET_ADDRESS = '0x1516000000000000000000000000000000000000'
+const FACTORY_ADDRESS = CONSTANTS[1516].V3_FACTORY_CONTRACT
+const USDC_MAINNET_ADDRESS = CONSTANTS[1516].STABLECOIN_ADDRESSES[0]
+const WIP_MAINNET_ADDRESS = CONSTANTS[1516].WIP_ADDRESS
 const WBTC_MAINNET_ADDRESS = '0x...'
 export const USDC_WIP_03_MAINNET_POOL = '0x...'
 export const WBTC_WIP_03_MAINNET_POOL = '0x...'
@@ -26,7 +26,6 @@ export const TEST_CONFIG: SubgraphConfig = {
   stablecoinAddresses: [USDC_MAINNET_ADDRESS],
   whitelistTokens: [WIP_MAINNET_ADDRESS, USDC_MAINNET_ADDRESS],
   tokenOverrides: [],
-  poolsToSkip: [],
   poolMappings: [],
 }
 
@@ -40,7 +39,6 @@ export const TEST_CONFIG_WITH_NO_WHITELIST: SubgraphConfig = {
   stablecoinAddresses: [USDC_MAINNET_ADDRESS],
   whitelistTokens: [],
   tokenOverrides: [],
-  poolsToSkip: [],
   poolMappings: [],
 }
 
@@ -50,7 +48,6 @@ export const TEST_CONFIG_WITH_POOL_SKIPPED: SubgraphConfig = {
   stablecoinIsToken0: true,
   wrappedNativeAddress: WIP_MAINNET_ADDRESS,
   minimumNativeLocked: ZERO_BD,
-  poolsToSkip: [],
   stablecoinAddresses: [USDC_MAINNET_ADDRESS],
   whitelistTokens: [WIP_MAINNET_ADDRESS, USDC_MAINNET_ADDRESS],
   tokenOverrides: [],
@@ -159,7 +156,7 @@ export const invokePoolCreatedWithMockedIPCalls = (
   const token0 = getTokenFixture(pool.token0.address)
   const token1 = getTokenFixture(pool.token1.address)
 
-  const mockEvent = newMockEvent()
+  // const mockEvent = newMockEvent()
   const token0Address = Address.fromString(token0.address)
   const token1Address = Address.fromString(token1.address)
   const poolAddress = Address.fromString(subgraphConfig.stablecoinWrappedNativePoolAddress)
