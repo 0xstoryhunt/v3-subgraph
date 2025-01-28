@@ -26,6 +26,6 @@
     "typescript": "^3.5.2"
   },
   "dependencies": {
-    "@storyhunt/default-list": "^1.0.3"
+    "@storyhunt/default-list": "^1.0.4"
   }
 }

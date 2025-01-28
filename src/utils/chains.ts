@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt, dataSource } from '@graphprotocol/graph-ts'
-
+import { CONSTANTS } from './constants'
 import { StaticTokenDefinition } from './staticTokenDefinition'
 
 export enum ChainId {
@@ -80,19 +80,13 @@ export function getSubgraphConfig(): SubgraphConfig {
     }
   } else if (selectedNetwork == ODYSSEY_TESTNET_NAME) {
     return {
-      factoryAddress: '0xa96Ef9BBfc361Eb0dc6aC3C788e49f1e6C2cA60d',
-      stablecoinWrappedNativePoolAddress: '0x20e78416f5c489ab2f1db6ec2eac173ef6ede88f', // WIP-USDC 0.05% pool
+      factoryAddress: CONSTANTS[1516].V3_FACTORY_CONTRACT,
+      stablecoinWrappedNativePoolAddress: CONSTANTS[1516].STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, // WIP-USDC 0.05% pool
       stablecoinIsToken0: false,
-      wrappedNativeAddress: '0x1516000000000000000000000000000000000000', // WIP
+      wrappedNativeAddress: CONSTANTS[1516].WIP_ADDRESS, // WIP
       minimumNativeLocked: BigDecimal.fromString('1'),
-      stablecoinAddresses: [
-        '0xf1815bd50389c46847f0bda824ec8da914045d14', // USDC
-      ],
-      whitelistTokens: [
-        '0x1516000000000000000000000000000000000000', //WIP
-        '0xf1815bd50389c46847f0bda824ec8da914045d14', //USDC
-        '0x181c610790F508F281b48Ca29ddc1DFfff9B0D80', //FATE
-      ],
+      stablecoinAddresses: CONSTANTS[1516].STABLECOIN_ADDRESSES,
+      whitelistTokens: CONSTANTS[1516].WHITELIST_TOKEN_ADDRESSES,
       tokenOverrides: [],
       poolsToSkip: [],
       poolMappings: [],

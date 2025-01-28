@@ -4,25 +4,6 @@ import { exponentToBigDecimal, safeDiv } from '../utils/index'
 import { Bundle, Pool, Token } from './../types/schema'
 import { ONE_BD, ZERO_BD, ZERO_BI } from './constants'
 
-export const WIP_ADDRESS = '0x1516000000000000000000000000000000000000'
-export const USDC_WIP_03_POOL = '0x...'
-export const STABLECOIN_IS_TOKEN0 = true
-
-// token where amounts should contribute to tracked volume and liquidity
-// usually tokens that many tokens are paired with s
-
-export const WHITELIST_TOKENS: string[] = [
-  '0xF1815bd50389c46847f0Bda824eC8da914045D14', // USDC
-  '0x1516000000000000000000000000000000000000', // WIP
-  '0x181c610790F508F281b48Ca29ddc1DFfff9B0D80', // FATE
-]
-
-export const STABLE_COINS: string[] = [
-  '0xf1815bd50389c46847f0bda824ec8da914045d14', // USDC
-]
-
-export const MINIMUM_IP_LOCKED = BigDecimal.fromString('60')
-
 const Q192 = BigInt.fromI32(2).pow(192 as u8)
 export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, token1: Token): BigDecimal[] {
   const num = sqrtPriceX96.times(sqrtPriceX96).toBigDecimal()
