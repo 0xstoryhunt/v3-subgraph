@@ -6,11 +6,11 @@ import { PoolCreated } from '../src/types/Factory/Factory'
 import { Factory as FactoryContract } from '../src/types/Factory/Factory'
 import { Pool, Token } from '../src/types/schema'
 import { SubgraphConfig } from '../src/utils/chains'
-import { CONSTANTS, ADDRESS_ZERO, ZERO_BD, ZERO_BI } from '../src/utils/constants'
+import { ADDRESS_ZERO, STABLECOIN_ADDRESSES, V3_FACTORY_CONTRACT, WIP_ADDRESS, ZERO_BD, ZERO_BI } from '../src/utils/constants'
 
-const FACTORY_ADDRESS = CONSTANTS[1516].V3_FACTORY_CONTRACT
-const USDC_MAINNET_ADDRESS = CONSTANTS[1516].STABLECOIN_ADDRESSES[0]
-const WIP_MAINNET_ADDRESS = CONSTANTS[1516].WIP_ADDRESS
+const FACTORY_ADDRESS = V3_FACTORY_CONTRACT
+const USDC_MAINNET_ADDRESS = STABLECOIN_ADDRESSES[0]
+const WIP_MAINNET_ADDRESS = WIP_ADDRESS
 const WBTC_MAINNET_ADDRESS = '0x...'
 export const USDC_WIP_03_MAINNET_POOL = '0x...'
 export const WBTC_WIP_03_MAINNET_POOL = '0x...'
