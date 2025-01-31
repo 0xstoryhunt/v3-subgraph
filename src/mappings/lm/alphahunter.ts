@@ -10,8 +10,10 @@ import {
   UpdateUpkeepPeriod,
   NewPeriodDuration,
 } from '../../types/AlphaHunterV3/AlphaHunterV3'
-import { LMPool, LMTransaction, Pool, Position, AlphaHunter, RewardPeriod, RewardToken, PositionReward } from '../../types/schema'
+import { LMPool, LMTransaction, Pool, Position, AlphaHunter, RewardPeriod, RewardToken, PositionReward, Token } from '../../types/schema'
 import { ZERO_BD, ADDRESS_ZERO, ZERO_BI } from '../../utils/constants'
+import { populateToken } from '../../backfill'
+import { getSubgraphConfig, SubgraphConfig } from '../../utils/chains'
 
 /**
  * Helper function to get or create MasterChef entity.
@@ -172,6 +174,7 @@ export function handleHarvest(event: Harvest): void {
  * Handles the UpdateLiquidity event.
  */
 export function handleUpdateLiquidity(event: UpdateLiquidity): void {
+  // @TODO
   // let lmPool = LMPool.load(event.params.pid.toString())
   // let position = Position.load(event.params.tokenId.toString())
   // if (!lmPool || !position) return
@@ -186,7 +189,18 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
 }
 
 
+export function handleNewUpkeepPeriodHelper(
+  event: NewUpkeepPeriod,
+  subgraphConfig: SubgraphConfig = getSubgraphConfig(),
+): void {
+  const tokenOverrides = subgraphConfig.tokenOverrides
+  let token = Token.load(event.params.token.toHexString());
+  if(!token){
+    populateToken(event.params.token.toHexString(),tokenOverrides);
+  }
+}
 
+  
 /**
  * Handles the NewUpkeepPeriod event.
  */
@@ -202,6 +216,8 @@ export function handleNewUpkeepPeriod(event: NewUpkeepPeriod): void {
     rewardPeriod.periodNumber = event.params.periodNumber;
     rewardPeriod.save();
   }
+
+  handleNewUpkeepPeriodHelper(event);
 
   let rewardTokenId = `${event.params.token.toHexString()}-${periodId}`;
   let rewardToken = new RewardToken(rewardTokenId);
