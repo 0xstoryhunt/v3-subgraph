@@ -97,7 +97,7 @@ dataSources:
     name: AlphaHunterV3
     network: odyssey-testnet
     source:
-      address: '0x7DC66165b101579148bfaD7f691C30d818bc5f39'
+      address: '0xEf29EaC9CDCa7CC9cb26a06D6F2e9C147cbfC6FE'
       abi: AlphaHunterV3
       startBlock: 1950000 # Replace with the correct start block
     mapping:
