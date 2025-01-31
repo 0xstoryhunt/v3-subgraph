@@ -9,7 +9,7 @@ import { ZERO_BD, ZERO_BI } from '../utils/constants'
 import { StaticTokenDefinition } from '../utils/staticTokenDefinition'
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, fetchTokenTotalSupply } from '../utils/token'
 
-function populateToken(tokenAddress: string, tokenOverrides: StaticTokenDefinition[]): void {
+export function populateToken(tokenAddress: string, tokenOverrides: StaticTokenDefinition[]): void {
   let token = Token.load(tokenAddress)
   if (token != null) {
     return
