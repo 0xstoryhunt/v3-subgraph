@@ -9,7 +9,7 @@ features:
 dataSources:
   - kind: ethereum/contract
     name: StoryHuntTokenLaunchpad
-    network: odyssey-testnet
+    network: story-aeneid
     source:
       abi: StoryHuntTokenLaunchpad
       address: '0x13Ae6e01a6eA736e0C070aeAB312764ded729CdA'
@@ -30,7 +30,7 @@ dataSources:
 
   - kind: ethereum/contract
     name: Factory
-    network: odyssey-testnet
+    network: story-aeneid
     source:
       abi: Factory
       address: '0x45B3fBfE020cEd4F7a3d1AD8B23e3e7FC500E5e7'
@@ -60,7 +60,7 @@ dataSources:
 
   - kind: ethereum/contract
     name: NonfungiblePositionManager
-    network: odyssey-testnet
+    network: story-aeneid
     source:
       address: '0xBE6da1986c159eA87d61f03D6b820C2581018FCA' # Add the contract address
       abi: NonfungiblePositionManager
@@ -95,7 +95,7 @@ dataSources:
 
   - kind: ethereum/contract
     name: AlphaHunterV3
-    network: odyssey-testnet
+    network: story-aeneid
     source:
       address: '0xEf29EaC9CDCa7CC9cb26a06D6F2e9C147cbfC6FE'
       abi: AlphaHunterV3
@@ -134,7 +134,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pool
-    network: odyssey-testnet
+    network: story-aeneid
     source:
       abi: Pool
     mapping:
