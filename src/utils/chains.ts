@@ -1,15 +1,7 @@
 import { Address, BigDecimal, BigInt, dataSource } from '@graphprotocol/graph-ts'
-import { STABLECOIN_ADDRESSES, STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, V3_FACTORY_CONTRACT, WHITELIST_TOKEN_ADDRESSES, WIP_ADDRESS } from './constants'
+import { ODYSSEY_TESTNET_NAME, STABLECOIN_ADDRESSES, STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, STORY_MAINNET_NAME, STORY_TESTNET_NAME, V3_FACTORY_CONTRACT, WHITELIST_TOKEN_ADDRESSES, WIP_ADDRESS } from './constants'
 import { StaticTokenDefinition } from './staticTokenDefinition'
 
-export enum ChainId {
-  STORY_TESTNET = 1513,
-  STORY_ODYSSEY = 1516,
-}
-
-// subgraph does not support string enums, hence these constants
-const STORY_TESTNET_NAME = 'story-testnet'
-const ODYSSEY_TESTNET_NAME = 'odyssey-testnet'
 // Note: All token and pool addresses should be lowercased!
 export class SubgraphConfig {
   // deployment address
@@ -56,29 +48,7 @@ export function getSubgraphConfig(): SubgraphConfig {
   const selectedNetwork = dataSource.network()
 
   // subgraph does not support case switch with strings, hence this if else block
-  if (selectedNetwork == STORY_TESTNET_NAME) {
-    return {
-      factoryAddress: '0x...',
-      stablecoinWrappedNativePoolAddress: '0x...', // WIP-USDbC 0.05% pool
-      stablecoinIsToken0: false,
-      wrappedNativeAddress: '0x...', // WIP
-      minimumNativeLocked: BigDecimal.fromString('1'),
-      stablecoinAddresses: [
-        '0x...', // USDC
-        '0x...', // USDT
-      ],
-      whitelistTokens: [
-        '0x...', // USDC
-        '0x...', // WIP
-        '0x...', // WIP
-        '0x...', // WBTC
-        '0x...', // FATE
-      ],
-      tokenOverrides: [],
-      poolsToSkip: [],
-      poolMappings: [],
-    }
-  } else if (selectedNetwork == ODYSSEY_TESTNET_NAME) {
+  if (selectedNetwork == STORY_MAINNET_NAME || selectedNetwork == STORY_TESTNET_NAME || selectedNetwork == ODYSSEY_TESTNET_NAME) {
     return {
       factoryAddress: V3_FACTORY_CONTRACT,
       stablecoinWrappedNativePoolAddress: STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, // WIP-USDC 0.05% pool

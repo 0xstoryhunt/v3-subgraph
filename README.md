@@ -1,6 +1,6 @@
 ## Deployed at
 
-https://api.goldsky.com/api/public/project_cm3zj9u61wxu901wog58adpjp/subgraphs/storyhunt-odyssey-testnet/1.0.5/gn
+https://api.goldsky.com/api/public/project_cm3zj9u61wxu901wog58adpjp/subgraphs/storyhunt-story-aeneid/1.0.5/gn
 
 ## Prerequisites
 
@@ -88,7 +88,7 @@ features:
 dataSources:
   - kind: ethereum/contract
     name: Factory
-    network: odyssey-testnet
+    network: story-aeneid
     source:
       address: <FACTORY_CONTRACT_ADDRESS>
       startBlock: <START_BLOCK>
@@ -118,7 +118,7 @@ dataSources:
 
   - kind: ethereum/contract
     name: NonfungiblePositionManager
-    network: odyssey-testnet
+    network: story-aeneid
     source:
       address: <NONFUNGIBLEPOSITIONMANAGER_CONTRACT_ADDRESS>
       startBlock: <START_BLOCK>
@@ -154,7 +154,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pool
-    network: odyssey-testnet
+    network: story-aeneid
     source:
       abi: Pool
     mapping:
