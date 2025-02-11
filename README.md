@@ -1,6 +1,12 @@
 ## Deployed at
 
-https://api.goldsky.com/api/public/project_cm3zj9u61wxu901wog58adpjp/subgraphs/storyhunt-story-aeneid/1.0.5/gn
+Testnet
+
+https://api.goldsky.com/api/public/project_cm0pznf9i44rl01rw89dk2app/subgraphs/testnet/1.0.0-aeneid/gn
+
+Mainnet 
+
+https://app.goldsky.com/project_cm0pznf9i44rl01rw89dk2app/dashboard/subgraphs/testnet/1.0.0-story
 
 ## Prerequisites
 

@@ -11,7 +11,7 @@
     "codegen": "graph codegen --output-dir src/types/",
     "test": "graph test -d",
     "test:no-tty": "docker run -i --rm --mount type=bind,source=$INIT_CWD,target=/matchstick matchstick",
-    "deploy": "goldsky subgraph deploy testnet/1.0.1-fresh"
+    "deploy": "goldsky subgraph deploy testnet/1.0.0-story"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.64.1",
@@ -27,5 +27,6 @@
   },
   "dependencies": {
     "@storyhunt/default-list": "^1.0.4"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
