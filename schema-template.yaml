@@ -7,14 +7,34 @@ features:
   - nonFatalErrors
   - grafting
 dataSources:
-  
+  - kind: ethereum/contract
+    name: StoryHuntTokenLaunchpad
+    network: story-aeneid
+    source:
+      abi: StoryHuntTokenLaunchpad
+      address: '0x1B17a3a024Cfe565337F784506265dAD1c1F1A7c'
+      startBlock: 620000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/token-launchpad.ts
+      entities:
+        - CreatedToken
+      abis:
+        - name: StoryHuntTokenLaunchpad
+          file: ./abis/StoryHuntTokenLaunchpad.json
+      eventHandlers:
+        - event: TokenCreated(indexed address,indexed address,string,string,uint256)
+          handler: handleTokenCreated
+
   - kind: ethereum/contract
     name: Factory
-    network: story
+    network: story-aeneid
     source:
       abi: Factory
       address: '0x305936Fb6EBE41e9b6815067ca357cAEf397c1e8'
-      startBlock: 300000
+      startBlock: 1950000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -40,11 +60,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: NonfungiblePositionManager
-    network: story
+    network: story-aeneid
     source:
       address: '0xc4965a978a909Ec458559f38e64BC7b1E060407d' # Add the contract address
       abi: NonfungiblePositionManager
-      startBlock: 300000 # Add the start block
+      startBlock: 1950000 # Add the start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -75,11 +95,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: AlphaHunterV3
-    network: story
+    network: story-aeneid
     source:
       address: '0x7504511BEf32BFF98d3cf296fe04e24c1fFCf0f4'
       abi: AlphaHunterV3
-      startBlock: 300000 # Replace with the correct start block
+      startBlock: 1950000 # Replace with the correct start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -114,7 +134,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pool
-    network: story
+    network: story-aeneid
     source:
       abi: Pool
     mapping:
