@@ -12,8 +12,8 @@ dataSources:
     network: story-aeneid
     source:
       abi: StoryHuntTokenLaunchpad
-      address: '0x13Ae6e01a6eA736e0C070aeAB312764ded729CdA'
-      startBlock: 620000
+      address: '0x1B17a3a024Cfe565337F784506265dAD1c1F1A7c'
+      startBlock: 600000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -33,8 +33,8 @@ dataSources:
     network: story-aeneid
     source:
       abi: Factory
-      address: '0x45B3fBfE020cEd4F7a3d1AD8B23e3e7FC500E5e7'
-      startBlock: 1950000
+      address: '0x57232FAb5a3269D3d77457bcE96aADD455f274cB'
+      startBlock: 600000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -62,9 +62,9 @@ dataSources:
     name: NonfungiblePositionManager
     network: story-aeneid
     source:
-      address: '0xBE6da1986c159eA87d61f03D6b820C2581018FCA' # Add the contract address
+      address: '0x8d5B4F1db0C023dd113EDE4d0632D57d2212efA5' # Add the contract address
       abi: NonfungiblePositionManager
-      startBlock: 1950000 # Add the start block
+      startBlock: 600000 # Add the start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -97,9 +97,9 @@ dataSources:
     name: AlphaHunterV3
     network: story-aeneid
     source:
-      address: '0xEf29EaC9CDCa7CC9cb26a06D6F2e9C147cbfC6FE'
+      address: '0x31028C208C6d33bFD66605c2E3D593965fdceBDb'
       abi: AlphaHunterV3
-      startBlock: 1950000 # Replace with the correct start block
+      startBlock: 600000 # Replace with the correct start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
