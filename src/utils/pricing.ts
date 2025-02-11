@@ -25,7 +25,7 @@ export function getNativePriceInUSD(
   if (stablecoinWrappedNativePool !== null) {
     return stablecoinIsToken0 ? stablecoinWrappedNativePool.token0Price : stablecoinWrappedNativePool.token1Price
   } else {
-    return BigDecimal.fromString('10')
+    return BigDecimal.fromString('0')
   }
 }
 
