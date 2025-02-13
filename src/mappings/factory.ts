@@ -50,6 +50,7 @@ export function handlePoolCreatedHelper(
     // create new bundle for tracking IP price
     const bundle = new Bundle('1')
     bundle.IPPriceUSD = ZERO_BD
+  log.info('[FACTORY INIT]: Updating IPPriceUSD: {}', [bundle.IPPriceUSD.toString()])
     bundle.save()
 
     populateEmptyPools(event, poolMappings, whitelistTokens, tokenOverrides)

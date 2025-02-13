@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 
 import { Bundle, Pool, Token } from '../../types/schema'
 import { Initialize } from '../../types/templates/Pool/Pool'
@@ -30,6 +30,7 @@ export function handleInitializeHelper(event: Initialize, subgraphConfig: Subgra
   // update IP price now that prices could have changed
   const bundle = Bundle.load('1')!
   bundle.IPPriceUSD = getNativePriceInUSD(stablecoinWrappedNativePoolAddress, stablecoinIsToken0)
+  log.info('[POOL INIT]: Updating IPPriceUSD: {}', [bundle.IPPriceUSD.toString()])
   bundle.save()
 
   updatePoolDayData(event)

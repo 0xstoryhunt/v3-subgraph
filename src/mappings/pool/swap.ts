@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 
 import { Bundle, Factory, Pool, Swap, Token } from '../../types/schema'
 import { Swap as SwapEvent } from '../../types/templates/Pool/Pool'
@@ -126,6 +126,7 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
 
     // update USD pricing
     bundle.IPPriceUSD = getNativePriceInUSD(stablecoinWrappedNativePoolAddress, stablecoinIsToken0)
+    log.info('[SWAP]: Updating IPPriceUSD: {}', [bundle.IPPriceUSD.toString()])
     bundle.save()
     token0.derivedIP = findNativePerToken(
       token0 as Token,
