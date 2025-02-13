@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 
 import { exponentToBigDecimal, safeDiv } from '../utils/index'
 import { Bundle, Pool, Token } from './../types/schema'
@@ -23,6 +23,7 @@ export function getNativePriceInUSD(
 ): BigDecimal {
   const stablecoinWrappedNativePool = Pool.load(stablecoinWrappedNativePoolAddress)
   if (stablecoinWrappedNativePool !== null) {
+    log.info('[STABLE_POOL_PRICES]: token0Price / token1Price: {} / {}', [stablecoinWrappedNativePool.token0Price.toString(), stablecoinWrappedNativePool.token1Price.toString()])
     return stablecoinIsToken0 ? stablecoinWrappedNativePool.token0Price : stablecoinWrappedNativePool.token1Price
   } else {
     return BigDecimal.fromString('0')
