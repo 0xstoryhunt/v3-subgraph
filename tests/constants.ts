@@ -255,6 +255,7 @@ export const createAndStoreTestToken = (tokenFixture: TokenFixture): Token => {
   token.totalValueLocked = ZERO_BD
   token.totalValueLockedUSD = ZERO_BD
   token.totalValueLockedUSDUntracked = ZERO_BD
+  token.marketCap = ZERO_BD
   token.derivedIP = ZERO_BD
   token.whitelistPools = []
 

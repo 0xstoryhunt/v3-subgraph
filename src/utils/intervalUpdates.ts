@@ -13,6 +13,7 @@ import {
   StoryHuntDayData,
 } from './../types/schema'
 import { ONE_BI, ZERO_BD, ZERO_BI } from './constants'
+import { exponentToBigDecimal } from '.'
 
 /**
  * Tracks global aggregate data over daily windows
@@ -243,4 +244,13 @@ export function updateTokenMinuteData(token: Token, event: ethereum.Event): Toke
   tokenMinuteData.save()
 
   return tokenMinuteData as TokenMinuteData
+}
+
+
+export function updateTokenMarketCap(token: Token, bundle: Bundle): void {
+  // Convert totalSupply (BigInt) to BigDecimal (in native token units)
+  let supply = token.totalSupply.toBigDecimal().div(exponentToBigDecimal(token.decimals))
+  // MarketCap = Supply * derivedIP * IPPriceUSD
+  token.marketCap = supply.times(token.derivedIP).times(bundle.IPPriceUSD)
+  token.save()
 }
