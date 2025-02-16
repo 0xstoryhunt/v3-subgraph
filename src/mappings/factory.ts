@@ -84,6 +84,7 @@ export function handlePoolCreatedHelper(
     token0.totalValueLocked = ZERO_BD
     token0.totalValueLockedUSD = ZERO_BD
     token0.totalValueLockedUSDUntracked = ZERO_BD
+    token0.marketCap = ZERO_BD
     token0.txCount = ZERO_BI
     token0.poolCount = ZERO_BI
     token0.whitelistPools = []
@@ -109,6 +110,7 @@ export function handlePoolCreatedHelper(
     token1.totalValueLocked = ZERO_BD
     token1.totalValueLockedUSD = ZERO_BD
     token1.totalValueLockedUSDUntracked = ZERO_BD
+    token1.marketCap = ZERO_BD
     token1.txCount = ZERO_BI
     token1.poolCount = ZERO_BI
     token1.whitelistPools = []

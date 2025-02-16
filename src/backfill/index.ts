@@ -31,6 +31,7 @@ export function populateToken(tokenAddress: string, tokenOverrides: StaticTokenD
   token.totalValueLocked = ZERO_BD
   token.totalValueLockedUSD = ZERO_BD
   token.totalValueLockedUSDUntracked = ZERO_BD
+  token.marketCap = ZERO_BD
   token.txCount = ZERO_BI
   token.poolCount = ZERO_BI
   token.whitelistPools = []
