@@ -174,18 +174,28 @@ export function handleHarvest(event: Harvest): void {
  * Handles the UpdateLiquidity event.
  */
 export function handleUpdateLiquidity(event: UpdateLiquidity): void {
-  // @TODO
-  // let lmPool = LMPool.load(event.params.pid.toString())
-  // let position = Position.load(event.params.tokenId.toString())
-  // if (!lmPool || !position) return
-  // let liquidityDelta = event.params.liquidity.toBigDecimal()
-  // lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDelta)
-  // lmPool.tvl = lmPool.stakedLiquidity
-  // lmPool.save()
-  // position.liquidity = event.params.liquidity
-  // position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
-  // position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
-  // position.save()
+  //@TODO
+  let lmPool = LMPool.load(event.params.pid.toString())
+  let position = Position.load(event.params.tokenId.toString())
+  if (!lmPool || !position) return
+  let liquidityDiff = ZERO_BD
+  let liquidityDelta = event.params.liquidity.toBigDecimal()
+  if(position.liquidity.toBigDecimal() > liquidityDelta){
+    // liquidityDiff = position liquidity - liquidity delta
+    liquidityDiff = position.liquidity.toBigDecimal().minus(liquidityDelta);
+    lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(liquidityDiff)
+  } else {
+    // liquidityDiff = liquidity delta - position liquidity
+    liquidityDiff = liquidityDelta.minus(position.liquidity.toBigDecimal());
+    lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDiff)
+  }
+  
+  lmPool.tvl = lmPool.stakedLiquidity
+  lmPool.save()
+  position.liquidity = event.params.liquidity
+  position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
+  position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
+  position.save()
 }
 
 
