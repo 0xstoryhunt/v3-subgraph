@@ -79,6 +79,7 @@ type Token @entity {
   derivedIP: BigDecimal!
   # <-- New field for market capitalization
   marketCap: BigDecimal!  
+  lastMarketCapUpdate: BigInt
   # pools token is in that are white listed for USD pricing
   whitelistPools: [Pool!]!
   # derived fields
