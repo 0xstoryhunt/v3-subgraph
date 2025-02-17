@@ -200,8 +200,8 @@ export function handleSwapHelper(
       minimumNativeLocked,
     )
 
-    updateTokenMarketCap(token0,bundle)
-    updateTokenMarketCap(token1,bundle)
+    updateTokenMarketCap(token0,whitelistTokens,event.block.timestamp)
+    updateTokenMarketCap(token1,whitelistTokens,event.block.timestamp)
 
     /**
      * Update TVL and USD TVL
@@ -210,13 +210,21 @@ export function handleSwapHelper(
       .times(token0.derivedIP)
       .plus(pool.totalValueLockedToken1.times(token1.derivedIP))
     pool.totalValueLockedUSD = pool.totalValueLockedIP.times(bundle.IPPriceUSD)
-
     // Retrieve PoolDayData from the updatePoolDayData function
-    const poolDayData = updatePoolDayData(event)
 
+    let dayNumber = event.block.timestamp.toI32() / 86400; 
+    // Target day is two days ago
+    let targetDay = dayNumber - 2;
+    // Construct the ID: typically pool day data IDs are of the form "<pool.id>-<dayNumber>"
+    let poolDayID = pool.id.concat("-").concat(targetDay.toString());
+    let _poolDayData = PoolDayData.load(poolDayID);
+    if (_poolDayData == null) {
+      // Optionally fallback to the current day's snapshot if 2-days-ago is missing.
+      _poolDayData = updatePoolDayData(event);
+    }
     // --- NEW: Updated Fee APR Calculation using the PancakeSwap formula ---
     // Fee APR = (TVL * feePercent * 365) / (dailyVolume) * 100
-    calculateFeeAPR(pool, poolDayData)
+    calculateFeeAPR(pool, _poolDayData)
 
     factory.totalValueLockedIP = factory.totalValueLockedIP.plus(pool.totalValueLockedIP)
     factory.totalValueLockedUSD = factory.totalValueLockedIP.times(bundle.IPPriceUSD)
@@ -244,7 +252,7 @@ export function handleSwapHelper(
 
     // interval data updates
     const storyhuntDayData = updateStoryHuntDayData(event, factoryAddress)
-    // const poolDayData = updatePoolDayData(event) // moved higher
+    const poolDayData = updatePoolDayData(event) // moved higher
     const poolHourData = updatePoolHourData(event)
     const token0DayData = updateTokenDayData(token0 as Token, event)
     const token1DayData = updateTokenDayData(token1 as Token, event)

@@ -16,6 +16,7 @@ export function handleInitializeHelper(event: Initialize, subgraphConfig: Subgra
   const wrappedNativeAddress = subgraphConfig.wrappedNativeAddress
   const stablecoinAddresses = subgraphConfig.stablecoinAddresses
   const minimumNativeLocked = subgraphConfig.minimumNativeLocked
+  const whitelistTokens = subgraphConfig.whitelistTokens;
 
   // update pool sqrt price and tick
   const pool = Pool.load(event.address.toHexString())!
@@ -52,8 +53,8 @@ export function handleInitializeHelper(event: Initialize, subgraphConfig: Subgra
     )
     token0.save()
     token1.save()
-    
-    updateTokenMarketCap(token0,bundle)
-    updateTokenMarketCap(token1,bundle)
+
+    updateTokenMarketCap(token0,whitelistTokens,event.block.timestamp)
+    updateTokenMarketCap(token1,whitelistTokens,event.block.timestamp)
   }
 }
