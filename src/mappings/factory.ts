@@ -50,6 +50,7 @@ export function handlePoolCreatedHelper(
     // create new bundle for tracking IP price
     const bundle = new Bundle('1')
     bundle.IPPriceUSD = ZERO_BD
+  log.info('[FACTORY INIT]: Updating IPPriceUSD: {}', [bundle.IPPriceUSD.toString()])
     bundle.save()
 
     populateEmptyPools(event, poolMappings, whitelistTokens, tokenOverrides)
@@ -83,6 +84,7 @@ export function handlePoolCreatedHelper(
     token0.totalValueLocked = ZERO_BD
     token0.totalValueLockedUSD = ZERO_BD
     token0.totalValueLockedUSDUntracked = ZERO_BD
+    token0.marketCap = ZERO_BD
     token0.txCount = ZERO_BI
     token0.poolCount = ZERO_BI
     token0.whitelistPools = []
@@ -108,6 +110,7 @@ export function handlePoolCreatedHelper(
     token1.totalValueLocked = ZERO_BD
     token1.totalValueLockedUSD = ZERO_BD
     token1.totalValueLockedUSDUntracked = ZERO_BD
+    token1.marketCap = ZERO_BD
     token1.txCount = ZERO_BI
     token1.poolCount = ZERO_BI
     token1.whitelistPools = []

@@ -1,4 +1,4 @@
-import { ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
 import {
   Bundle,
@@ -13,6 +13,7 @@ import {
   StoryHuntDayData,
 } from './../types/schema'
 import { ONE_BI, ZERO_BD, ZERO_BI } from './constants'
+import { exponentToBigDecimal, safeDiv } from '.'
 
 /**
  * Tracks global aggregate data over daily windows
@@ -243,4 +244,40 @@ export function updateTokenMinuteData(token: Token, event: ethereum.Event): Toke
   tokenMinuteData.save()
 
   return tokenMinuteData as TokenMinuteData
+}
+
+
+
+export function updateTokenMarketCap(token: Token, whitelistTokens: string[], eventTimestamp: BigInt): void {
+  // Only update totalSupply from chain if the token is whitelisted and if it hasn't been updated in the last 12 hours.
+  // if (whitelistTokens.includes(token.id.toLowerCase())) {
+  //   // If lastMarketCapUpdate is null, update immediately.
+  //   if (token.lastMarketCapUpdate === null) {
+  //     let newTotalSupply = fetchTokenTotalSupply(Address.fromString(token.id))
+  //     // Only update if we got a non-zero total supply.
+  //     if (newTotalSupply.gt(BigInt.zero())) {
+  //       token.totalSupply = newTotalSupply
+  //       token.lastMarketCapUpdate = eventTimestamp
+  //     }
+  //   } else {
+  //     // Check if at least 12 hours (43200 seconds) have passed.
+  //     if (eventTimestamp.minus(token.lastMarketCapUpdate!) >= BigInt.fromI32(43200)) {
+  //       let newTotalSupply = fetchTokenTotalSupply(Address.fromString(token.id))
+  //       if (newTotalSupply.gt(BigInt.zero())) {
+  //         token.totalSupply = newTotalSupply
+  //         token.lastMarketCapUpdate = eventTimestamp
+  //       }
+  //     }
+  //   }
+  // }
+
+  // Convert totalSupply (BigInt) to BigDecimal in token units.
+  let supply = token.totalSupply.toBigDecimal().div(exponentToBigDecimal(token.decimals));
+  
+  // Calculate ratio = totalValueLockedUSD / totalValueLocked using safeDiv.
+  let ratio = safeDiv(token.totalValueLockedUSD, token.totalValueLocked);
+  
+  // New market cap formula: marketCapToken = supply * (totalValueLockedUSD / totalValueLocked)
+  token.marketCap = supply.times(ratio);
+  token.save();
 }
