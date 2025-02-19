@@ -4,18 +4,19 @@ import {
   SetPool,
   Deposit,
   Withdraw,
-  Harvest,           // new Harvest event type (without token)
+  Harvest,
   UpdateLiquidity,
-  NewUpkeepPeriod,   // new NewUpkeepPeriod event type (without token)
-  UpdateUpkeepPeriod, // new UpdateUpkeepPeriod event type (without token)
+  NewUpkeepPeriod,
+  UpdateUpkeepPeriod,
   NewPeriodDuration,
-} from '../../types/AlphaHunterV3/AlphaHunterV3'  // Ensure these types are generated from the new ABI
+} from '../../types/AlphaHunterV3/AlphaHunterV3'
 import { LMPool, LMTransaction, Pool, Position, AlphaHunter, RewardPeriod, RewardToken, PositionReward, Token } from '../../types/schema'
-import { ZERO_BD, WIP_ADDRESS, ZERO_BI, ADDRESS_ZERO } from '../../utils/constants'
+import { ZERO_BD, ADDRESS_ZERO, ZERO_BI } from '../../utils/constants'
+import { populateToken } from '../../backfill'
+import { getSubgraphConfig, SubgraphConfig } from '../../utils/chains'
+
 /**
- * Helper function to get or create AlphaHunter entity.
- * Here, we do not attempt to derive the reward token from the contract;
- * we simply rely on WIP_ADDRESS in event handlers.
+ * Helper function to get or create MasterChef entity.
  */
 function getOrCreateAlphaHunter(): AlphaHunter {
   let alphaHunter = AlphaHunter.load(dataSource.address().toHexString())
@@ -24,7 +25,6 @@ function getOrCreateAlphaHunter(): AlphaHunter {
     alphaHunter.totalAllocPoint = ZERO_BI
     alphaHunter.timestamp = ZERO_BI
     alphaHunter.block = ZERO_BI
-    // No rewardToken initialization here; we will use WIP_ADDRESS as fallback.
   }
   return alphaHunter
 }
@@ -118,13 +118,14 @@ export function handleWithdraw(event: Withdraw): void {
   transaction.type = 'Unstake'
   transaction.user = event.params.from
   transaction.pool = lmPool.id
-  transaction.amount = position.liquidity.toBigDecimal() // If needed, calculate actual liquidity removed
+  transaction.amount = position.liquidity.toBigDecimal() // If needed, calculate actual 'liquidity removed'
   transaction.reward = ZERO_BD
   transaction.timestamp = event.block.timestamp
 
   // Update pool stats
   lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(transaction.amount)
   if (lmPool.stakedLiquidity.lt(ZERO_BD)) {
+    // Prevent negative staked liquidity due to partial data
     lmPool.stakedLiquidity = ZERO_BD
   }
   lmPool.tvl = lmPool.stakedLiquidity
@@ -141,48 +142,51 @@ export function handleWithdraw(event: Withdraw): void {
 
 /**
  * Handles the Harvest event.
- * New signature: Harvest(indexed address sender, address to, indexed uint256 tokenId, indexed uint256 pid, uint256 reward)
- * Since no token parameter is provided, we set the reward token to WIP_ADDRESS.
  */
-export function handleHarvest(event: Harvest): void {
-  let positionId = event.params.tokenId.toString()
-  let rewardId = `${positionId}-${WIP_ADDRESS}`
 
-  let reward = PositionReward.load(rewardId)
+export function handleHarvest(event: Harvest): void {
+  let positionId = event.params.tokenId.toString();
+  let rewardId = `${positionId}-${event.params.token.toHexString()}`;
+
+  let reward = PositionReward.load(rewardId);
   if (!reward) {
-    reward = new PositionReward(rewardId)
-    reward.position = positionId
-    reward.token = WIP_ADDRESS
-    reward.earned = ZERO_BD
+    reward = new PositionReward(rewardId);
+    reward.position = positionId;
+    reward.token = event.params.token.toHexString();
+    reward.earned = ZERO_BD;
   }
 
-  reward.earned = reward.earned.plus(event.params.reward.toBigDecimal())
-  reward.save()
+  reward.earned = reward.earned.plus(event.params.reward.toBigDecimal());
+  reward.save();
 
-  let transaction = new LMTransaction(event.transaction.hash.toHex())
-  transaction.type = "Harvest"
-  transaction.user = event.params.sender
-  transaction.pool = event.params.pid.toString()
-  transaction.amount = ZERO_BD
-  transaction.reward = event.params.reward.toBigDecimal()
-  transaction.timestamp = event.block.timestamp
-  transaction.save()
+  let transaction = new LMTransaction(event.transaction.hash.toHex());
+  transaction.type = "Harvest";
+  transaction.user = event.params.sender;
+  transaction.pool = event.params.pid.toString();
+  transaction.amount = ZERO_BD;
+  transaction.reward = event.params.reward.toBigDecimal();
+  transaction.timestamp = event.block.timestamp;
+  transaction.save();
 }
+
 
 /**
  * Handles the UpdateLiquidity event.
  */
 export function handleUpdateLiquidity(event: UpdateLiquidity): void {
+  //@TODO
   let lmPool = LMPool.load(event.params.pid.toString())
   let position = Position.load(event.params.tokenId.toString())
   if (!lmPool || !position) return
   let liquidityDiff = ZERO_BD
   let liquidityDelta = event.params.liquidity.toBigDecimal()
-  if (position.liquidity.toBigDecimal() > liquidityDelta) {
-    liquidityDiff = position.liquidity.toBigDecimal().minus(liquidityDelta)
+  if(position.liquidity.toBigDecimal() > liquidityDelta){
+    // liquidityDiff = position liquidity - liquidity delta
+    liquidityDiff = position.liquidity.toBigDecimal().minus(liquidityDelta);
     lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(liquidityDiff)
   } else {
-    liquidityDiff = liquidityDelta.minus(position.liquidity.toBigDecimal())
+    // liquidityDiff = liquidity delta - position liquidity
+    liquidityDiff = liquidityDelta.minus(position.liquidity.toBigDecimal());
     lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDiff)
   }
   
@@ -194,46 +198,59 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   position.save()
 }
 
+
+export function handleNewUpkeepPeriodHelper(
+  event: NewUpkeepPeriod,
+  subgraphConfig: SubgraphConfig = getSubgraphConfig(),
+): void {
+  const tokenOverrides = subgraphConfig.tokenOverrides
+  let token = Token.load(event.params.token.toHexString());
+  if(!token){
+    populateToken(event.params.token.toHexString(),tokenOverrides);
+  }
+}
+
+  
 /**
  * Handles the NewUpkeepPeriod event.
- * New signature: NewUpkeepPeriod(indexed uint256 periodNumber, uint256 startTime, uint256 endTime, uint256 huntPerSecond, uint256 cakeAmount)
- * Since no token is provided, we use WIP_ADDRESS.
  */
 export function handleNewUpkeepPeriod(event: NewUpkeepPeriod): void {
   let alphaHunter = getOrCreateAlphaHunter()
-  let periodId = event.params.periodNumber.toString()
-  let rewardPeriod = RewardPeriod.load(periodId)
+  let periodId = event.params.periodNumber.toString();
+  let rewardPeriod = RewardPeriod.load(periodId);
 
   if (!rewardPeriod) {
-    rewardPeriod = new RewardPeriod(periodId)
-    rewardPeriod.alphaHunter = alphaHunter.id
-    rewardPeriod.id = periodId
-    rewardPeriod.periodNumber = event.params.periodNumber
-    rewardPeriod.save()
+    rewardPeriod = new RewardPeriod(periodId);
+    rewardPeriod.alphaHunter = alphaHunter.id // Assuming period number matches pool ID
+    rewardPeriod.id = periodId;
+    rewardPeriod.periodNumber = event.params.periodNumber;
+    rewardPeriod.save();
   }
 
-  let rewardTokenId = `${WIP_ADDRESS}-${periodId}`
-  let rewardToken = new RewardToken(rewardTokenId)
-  rewardToken.rewardPeriod = rewardPeriod.id
-  rewardToken.token = WIP_ADDRESS
-  rewardToken.rewardRate = event.params.huntPerSecond.toBigDecimal()
-  rewardToken.startTime = event.params.startTime
-  rewardToken.endTime = event.params.endTime
-  rewardToken.save()
+  handleNewUpkeepPeriodHelper(event);
+
+  let rewardTokenId = `${event.params.token.toHexString()}-${periodId}`;
+  let rewardToken = new RewardToken(rewardTokenId);
+  rewardToken.rewardPeriod = rewardPeriod.id;
+  rewardToken.token = event.params.token.toHexString();
+  rewardToken.rewardRate = event.params.huntPerSecond.toBigDecimal();
+  rewardToken.startTime = event.params.startTime;
+  rewardToken.endTime = event.params.endTime;
+  rewardToken.save();
 }
 
 /**
  * Handles the UpdateUpkeepPeriod event.
- * New signature: UpdateUpkeepPeriod(indexed uint256 periodNumber, uint256 oldEndTime, uint256 newEndTime, uint256 remainingCake)
  */
 export function handleUpdateUpkeepPeriod(event: UpdateUpkeepPeriod): void {
-  let periodId = event.params.periodNumber.toString()
-  let rewardTokenId = `${WIP_ADDRESS}-${periodId}`
-  let rewardToken = RewardToken.load(rewardTokenId)
-  if (!rewardToken) return
+  let periodId = event.params.periodNumber.toString();
+  let rewardTokenId = `${event.params.token.toHexString()}-${periodId}`;
+  let rewardToken = RewardToken.load(rewardTokenId);
 
-  rewardToken.endTime = event.params.newEndTime
-  rewardToken.save()
+  if (!rewardToken) return;
+
+  rewardToken.endTime = event.params.newEndTime;
+  rewardToken.save();
 }
 
 /**
