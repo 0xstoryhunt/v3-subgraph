@@ -77,6 +77,9 @@ type Token @entity {
   # price of that chain's native token, effectively, this should be renamed
   # derivedNative
   derivedIP: BigDecimal!
+  # <-- New field for market capitalization
+  marketCap: BigDecimal!  
+  lastMarketCapUpdate: BigInt
   # pools token is in that are white listed for USD pricing
   whitelistPools: [Pool!]!
   # derived fields
