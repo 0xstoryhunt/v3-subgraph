@@ -9,7 +9,7 @@ import {
   NewUpkeepPeriod,
   UpdateUpkeepPeriod,
   NewPeriodDuration,
-} from '../../types/AlphaHunterV3/AlphaHunterV3'
+} from '../../types/OldAlphaHunterV3/OldAlphaHunterV3'
 import { LMPool, LMTransaction, Pool, Position, AlphaHunter, RewardPeriod, RewardToken, PositionReward, Token } from '../../types/schema'
 import { ZERO_BD, ADDRESS_ZERO, ZERO_BI } from '../../utils/constants'
 import { populateToken } from '../../backfill'

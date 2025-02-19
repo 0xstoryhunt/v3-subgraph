@@ -9,7 +9,7 @@ import {
   NewUpkeepPeriod,   // new NewUpkeepPeriod event type (without token)
   UpdateUpkeepPeriod, // new UpdateUpkeepPeriod event type (without token)
   NewPeriodDuration,
-} from '../../types/AlphaHunterV3/AlphaHunterV3'  // Ensure these types are generated from the new ABI
+} from '../../types/AlphaHunterV3/AlphaHunter'  // Ensure these types are generated from the new ABI
 import { LMPool, LMTransaction, Pool, Position, AlphaHunter, RewardPeriod, RewardToken, PositionReward, Token } from '../../types/schema'
 import { ZERO_BD, WIP_ADDRESS, ZERO_BI, ADDRESS_ZERO } from '../../utils/constants'
 /**
@@ -202,21 +202,17 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
 export function handleNewUpkeepPeriod(event: NewUpkeepPeriod): void {
   let alphaHunter = getOrCreateAlphaHunter()
   let periodId = event.params.periodNumber.toString()
-  let rewardPeriod = RewardPeriod.load(periodId)
-
-  if (!rewardPeriod) {
-    rewardPeriod = new RewardPeriod(periodId)
-    rewardPeriod.alphaHunter = alphaHunter.id
-    rewardPeriod.id = periodId
-    rewardPeriod.periodNumber = event.params.periodNumber
-    rewardPeriod.save()
-  }
-
+  let rewardPeriod = new RewardPeriod(periodId)
+  rewardPeriod.alphaHunter = alphaHunter.id
+  rewardPeriod.id = periodId
+  rewardPeriod.periodNumber = event.params.periodNumber
+  rewardPeriod.save()
+  
   let rewardTokenId = `${WIP_ADDRESS}-${periodId}`
   let rewardToken = new RewardToken(rewardTokenId)
   rewardToken.rewardPeriod = rewardPeriod.id
   rewardToken.token = WIP_ADDRESS
-  rewardToken.rewardRate = event.params.huntPerSecond.toBigDecimal()
+  rewardToken.rewardRate = event.params.rewardPerSecond.toBigDecimal()
   rewardToken.startTime = event.params.startTime
   rewardToken.endTime = event.params.endTime
   rewardToken.save()
