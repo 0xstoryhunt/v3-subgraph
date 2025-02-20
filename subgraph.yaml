@@ -13,7 +13,7 @@ dataSources:
     network: story
     source:
       abi: Factory
-      address: '0x305936Fb6EBE41e9b6815067ca357cAEf397c1e8'
+      address: '0xa111dDbE973094F949D78Ad755cd560F8737B7e2'
       startBlock: 50000
     mapping:
       kind: ethereum/events
@@ -42,7 +42,7 @@ dataSources:
     name: NonfungiblePositionManager
     network: story
     source:
-      address: '0xc4965a978a909Ec458559f38e64BC7b1E060407d' # Add the contract address
+      address: '0xb3823797B00ef062Aaa1c4B3c60149AFc6CCf7a3' # Add the contract address
       abi: NonfungiblePositionManager
       startBlock: 50000 # Add the start block
     mapping:
@@ -77,7 +77,7 @@ dataSources:
     name: OldAlphaHunterV3
     network: story
     source:
-      address: '0x057bBe3A093Ce00113E90EE635c247a034011762'
+      address: '0xa31A12D2736d3371273e462f6E272db998aE8b28'
       abi: OldAlphaHunterV3
       startBlock: 50000 # Replace with the correct start block
     mapping:
@@ -115,7 +115,7 @@ dataSources:
     name: AlphaHunterV3
     network: story
     source:
-      address: '0x2152d2e4954474Cb351b89Fa9BcC8De93d531cBf'  # Replace with the new contract address
+      address: '0xNEWALPHAHUNTERADDRESS'  # Replace with the new contract address
       abi: AlphaHunter
       startBlock: 1000000  # Replace with the correct start block for the new contract
     mapping:
