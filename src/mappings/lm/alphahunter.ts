@@ -176,23 +176,17 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   let lmPool = LMPool.load(event.params.pid.toString())
   let position = Position.load(event.params.tokenId.toString())
   if (!lmPool || !position) return
-  let liquidityDiff = ZERO_BD
-  let liquidityDelta = event.params.liquidity.toBigDecimal()
-  if (position.liquidity.toBigDecimal() > liquidityDelta) {
-    liquidityDiff = position.liquidity.toBigDecimal().minus(liquidityDelta)
-    lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(liquidityDiff)
-  } else {
-    liquidityDiff = liquidityDelta.minus(position.liquidity.toBigDecimal())
-    lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDiff)
-  }
+  let liquidityDelta = event.params.liquidity;
+  lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDelta.toBigDecimal())
   
   lmPool.tvl = lmPool.stakedLiquidity
   lmPool.save()
-  position.liquidity = event.params.liquidity
+  position.liquidity = position.liquidity.plus(liquidityDelta)
   position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
   position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
   position.save()
 }
+
 
 /**
  * Handles the NewUpkeepPeriod event.
