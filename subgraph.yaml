@@ -77,7 +77,7 @@ dataSources:
     name: OldAlphaHunterV3
     network: story
     source:
-      address: '0x057bBe3A093Ce00113E90EE635c247a034011762'
+      address: '0xb6B703fe98fDa82Ad59c832AA665D81AA4Ba65f5'
       abi: OldAlphaHunterV3
       startBlock: 50000 # Replace with the correct start block
     mapping:
@@ -115,7 +115,7 @@ dataSources:
     name: AlphaHunterV3
     network: story
     source:
-      address: '0x2152d2e4954474Cb351b89Fa9BcC8De93d531cBf'  # Replace with the new contract address
+      address: '0xEAa84F4eB08448Ed5A468fA1b5F0b6455a3D2900'  # Replace with the new contract address
       abi: AlphaHunter
       startBlock: 1000000  # Replace with the correct start block for the new contract
     mapping:
