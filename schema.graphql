@@ -688,3 +688,31 @@ type LMTransaction @entity {
   token: Token # Reward Token
   timestamp: BigInt! # Transaction timestamp
 }
+
+type NFTHolder @entity {
+  id: ID!
+  address: Bytes!
+  tokenCount: BigInt!
+  tokens: [NFTToken!]! @derivedFrom(field: "owner")
+  firstOwnedAt: BigInt!
+  lastUpdatedAt: BigInt!
+}
+
+type NFTToken @entity {
+  id: ID!
+  tokenId: BigInt!
+  owner: NFTHolder!
+  mintedAt: BigInt!
+  mintedBy: Bytes!
+  transfers: [NFTTransfer!]! @derivedFrom(field: "token")
+}
+
+type NFTTransfer @entity {
+  id: ID!
+  token: NFTToken!
+  from: Bytes!
+  to: Bytes!
+  timestamp: BigInt!
+  transaction: Transaction!
+  blockNumber: BigInt!
+}
