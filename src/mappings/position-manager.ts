@@ -37,6 +37,10 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
         position.token1 = positionResult.value3.toHexString()
         position.tickLower = position.pool.concat('#').concat(positionResult.value5.toString())
         position.tickUpper = position.pool.concat('#').concat(positionResult.value6.toString())
+        position.tickLowerInt = BigInt.fromI32(positionResult.value5)
+        position.tickUpperInt = BigInt.fromI32(positionResult.value6)
+
+
         position.liquidity = ZERO_BI
         position.depositedToken0 = ZERO_BD
         position.depositedToken1 = ZERO_BD
@@ -48,6 +52,7 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
         position.feeGrowthInside0LastX128 = positionResult.value8
         position.feeGrowthInside1LastX128 = positionResult.value9
         position.isStaked = false
+        
 
         const lmPool = LMPool.load(poolAddress.value.toHexString());
         if (lmPool !== null) {
