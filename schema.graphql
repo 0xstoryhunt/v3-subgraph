@@ -214,7 +214,7 @@ type Position @entity {
   # all time collected fees in token0
   collectedFeesToken0: BigDecimal!
   # all time collected fees in token1
-  collectedFeesToken1: BigDecimal!
+  collectedFeesToken1: BigDecimalimage.png!
   # tx in which the position was initialized
   transaction: Transaction!
   # vars needed for fee computation
