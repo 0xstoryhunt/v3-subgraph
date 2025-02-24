@@ -11,6 +11,8 @@ import { LMPool, Position, PositionSnapshot, Token } from '../types/schema'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
 import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI } from '../utils/constants'
 import { getSubgraphConfig, SubgraphConfig } from '../utils/chains'
+import { fetchTokenSymbol } from '../utils/token'
+import { populateToken } from '../backfill'
 
 function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
   let position = Position.load(tokenId.toString())
@@ -33,15 +35,23 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
         position.owner = Address.fromString(ADDRESS_ZERO)
         position.staker = Address.fromString(ADDRESS_ZERO)
         position.pool = poolAddress.value.toHexString()
-        position.token0 = positionResult.value2.toHexString()
-        position.token1 = positionResult.value3.toHexString()
+
+        populateToken(positionResult.value2.toHexString(), [])  // Empty array for tokenOverrides
+        populateToken(positionResult.value3.toHexString(), [])
+
+        const token0 = Token.load(positionResult.value2.toHexString())
+        const token1 = Token.load(positionResult.value3.toHexString())
+
+        position.token0 = token0.id
+        position.token1 = token1.id
         position.tickLower = position.pool.concat('#').concat(positionResult.value5.toString())
         position.tickUpper = position.pool.concat('#').concat(positionResult.value6.toString())
         position.tickLowerInt = BigInt.fromI32(positionResult.value5)
         position.tickUpperInt = BigInt.fromI32(positionResult.value6)
 
 
-        position.liquidity = ZERO_BI
+        // position.liquidity = positionResult.value7
+
         position.depositedToken0 = ZERO_BD
         position.depositedToken1 = ZERO_BD
         position.withdrawnToken0 = ZERO_BD
@@ -52,18 +62,12 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
         position.feeGrowthInside0LastX128 = positionResult.value8
         position.feeGrowthInside1LastX128 = positionResult.value9
         position.isStaked = false
-        
-
-        const lmPool = LMPool.load(poolAddress.value.toHexString());
-        if (lmPool !== null) {
-          position.lmPool = lmPool.id;
-        }
-
       }
     }
   }
   return position
 }
+
 function updateFeeVars(position: Position, event: ethereum.Event, tokenId: BigInt): Position {
   const positionManagerContract = NonfungiblePositionManager.bind(event.address)
   const positionResult = positionManagerContract.try_positions(tokenId)
@@ -92,6 +96,7 @@ function savePositionSnapshot(position: Position, event: ethereum.Event): void {
   positionSnapshot.feeGrowthInside1LastX128 = position.feeGrowthInside1LastX128
   positionSnapshot.save()
 }
+
 export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
   const position = getPosition(event, event.params.tokenId)
 
