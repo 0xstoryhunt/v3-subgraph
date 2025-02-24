@@ -713,6 +713,6 @@ type NFTTransfer @entity {
   from: Bytes!
   to: Bytes!
   timestamp: BigInt!
-  transaction: Transaction!
+  transaction: String!
   blockNumber: BigInt!
 }

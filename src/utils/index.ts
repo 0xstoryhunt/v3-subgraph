@@ -113,6 +113,21 @@ export function loadTransaction(event: ethereum.Event, poolId: String): Transact
   return transaction as Transaction
 }
 
+export function loadTransactionTx(event: ethereum.Event, poolId: String = "0"): Transaction {
+  let transaction = Transaction.load(event.transaction.hash.toHexString())
+  if (transaction === null) {
+    transaction = new Transaction(event.transaction.hash.toHexString())
+    transaction.blockNumber = event.block.number
+    transaction.timestamp = event.block.timestamp
+    transaction.gasUsed = BigInt.zero() //needs to be moved to transaction receipt
+    transaction.gasPrice = event.transaction.gasPrice
+    transaction.from = event.transaction.from.toHexString()
+    transaction.save()
+  }
+  return transaction as Transaction
+}
+
+
 export function getTokenPriceUSD(tokenAddress: Address): BigDecimal {
   let token = Token.load(tokenAddress.toHexString());
   if (!token || token.derivedIP == ZERO_BD) return ZERO_BD;
