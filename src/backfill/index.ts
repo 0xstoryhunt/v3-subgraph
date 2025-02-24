@@ -35,6 +35,7 @@ export function populateToken(tokenAddress: string, tokenOverrides: StaticTokenD
   token.txCount = ZERO_BI
   token.poolCount = ZERO_BI
   token.whitelistPools = []
+  token.neighbour = []
   token.save()
 }
 
