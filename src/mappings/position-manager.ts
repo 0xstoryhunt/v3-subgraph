@@ -41,16 +41,18 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
 
         const token0 = Token.load(positionResult.value2.toHexString())
         const token1 = Token.load(positionResult.value3.toHexString())
-
-        position.token0 = token0.id
-        position.token1 = token1.id
+        if (token0 && token1){
+          position.token0 = token0.id
+          position.token1 = token1.id
+        }
+        
         position.tickLower = position.pool.concat('#').concat(positionResult.value5.toString())
         position.tickUpper = position.pool.concat('#').concat(positionResult.value6.toString())
         position.tickLowerInt = BigInt.fromI32(positionResult.value5)
         position.tickUpperInt = BigInt.fromI32(positionResult.value6)
 
-
-        // position.liquidity = positionResult.value7
+        position.liquidity = positionResult.value7  // Get initial liquidity from contract
+        position.isFirstLiquidityLoad = true  // Add flag to indicate initial load
 
         position.depositedToken0 = ZERO_BD
         position.depositedToken1 = ZERO_BD
@@ -110,7 +112,11 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
   if (token0 && token1) {
     const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
     const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
-    position.liquidity = position.liquidity.plus(event.params.liquidity)
+    if (!position.isFirstLiquidityLoad) {
+      position.liquidity = position.liquidity.plus(event.params.liquidity)
+    }
+    position.isFirstLiquidityLoad = false
+    
     position.depositedToken0 = position.depositedToken0.plus(amount0)
     position.depositedToken1 = position.depositedToken1.plus(amount1)
     updateFeeVars(position, event, event.params.tokenId)
@@ -130,7 +136,10 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
   if (token0 && token1) {
     const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
     const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
-    position.liquidity = position.liquidity.minus(event.params.liquidity)
+    if (!position.isFirstLiquidityLoad){
+      position.liquidity = position.liquidity.minus(event.params.liquidity)
+    }
+    position.isFirstLiquidityLoad = false
     position.withdrawnToken0 = position.withdrawnToken0.plus(amount0)
     position.withdrawnToken1 = position.withdrawnToken1.plus(amount1)
     position = updateFeeVars(position, event, event.params.tokenId)
