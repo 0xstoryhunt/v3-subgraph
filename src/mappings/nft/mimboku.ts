@@ -1,6 +1,7 @@
 import { Transfer } from '../../types/MimBokuNFT/MimBokuNFT'
 import { NFTHolder, NFTToken, NFTTransfer, Transaction } from '../../types/schema'
 import { BigInt, Address } from '@graphprotocol/graph-ts'
+import { loadTransactionTx } from '../../utils'
 
 function getOrCreateHolder(address: Address, timestamp: BigInt): NFTHolder {
   let holder = NFTHolder.load(address.toHexString())
@@ -49,16 +50,11 @@ export function handleTransfer(event: Transfer): void {
     event.transaction.hash.toHexString() + '-' + event.logIndex.toString()
   )
   
-  let tx = new Transaction(event.transaction.hash.toHexString())
-  tx.blockNumber = event.block.number
-  tx.timestamp = event.block.timestamp
-  tx.save()
-  
   transfer.token = token.id
   transfer.from = event.params.from
   transfer.to = event.params.to
   transfer.timestamp = event.block.timestamp
-  transfer.transaction = tx.id
+  transfer.transaction = event.transaction.hash.toHexString()
   transfer.blockNumber = event.block.number
   transfer.save()
 }
