@@ -12,7 +12,7 @@ dataSources:
     network: story-aeneid
     source:
       abi: StoryHuntTokenLaunchpad
-      address: '0x1B17a3a024Cfe565337F784506265dAD1c1F1A7c'
+      address: "0x1B17a3a024Cfe565337F784506265dAD1c1F1A7c"
       startBlock: 620000
     mapping:
       kind: ethereum/events
@@ -33,7 +33,7 @@ dataSources:
     network: story-aeneid
     source:
       abi: Factory
-      address: '0x305936Fb6EBE41e9b6815067ca357cAEf397c1e8'
+      address: "0x305936Fb6EBE41e9b6815067ca357cAEf397c1e8"
       startBlock: 1950000
     mapping:
       kind: ethereum/events
@@ -62,7 +62,7 @@ dataSources:
     name: NonfungiblePositionManager
     network: story-aeneid
     source:
-      address: '0xc4965a978a909Ec458559f38e64BC7b1E060407d' # Add the contract address
+      address: "0xc4965a978a909Ec458559f38e64BC7b1E060407d" # Add the contract address
       abi: NonfungiblePositionManager
       startBlock: 1950000 # Add the start block
     mapping:
@@ -97,7 +97,7 @@ dataSources:
     name: AlphaHunterV3
     network: story-aeneid
     source:
-      address: '0x7504511BEf32BFF98d3cf296fe04e24c1fFCf0f4'
+      address: "0x7504511BEf32BFF98d3cf296fe04e24c1fFCf0f4"
       abi: AlphaHunterV3
       startBlock: 1950000 # Replace with the correct start block
     mapping:
@@ -128,8 +128,8 @@ dataSources:
           handler: handleUpdateUpkeepPeriod
         - event: Withdraw(indexed address,address,indexed uint256,indexed uint256)
           handler: handleWithdraw
-        - event: NewPeriodDuration(uint256)
-          handler: handleNewPeriodDuration
+        # - event: NewPeriodDuration(uint256)
+        #   handler: handleNewPeriodDuration
 
 templates:
   - kind: ethereum/contract
@@ -163,4 +163,3 @@ templates:
           handler: handleBurn
         - event: Collect(indexed address,address,indexed int24,indexed int24,uint128,uint128)
           handler: handleCollect
-
