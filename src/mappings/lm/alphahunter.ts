@@ -1,4 +1,4 @@
-import { Address, BigInt, dataSource } from '@graphprotocol/graph-ts'
+import { Address, BigInt, dataSource, log } from '@graphprotocol/graph-ts'
 import {
   AddPool,
   SetPool,
@@ -79,6 +79,7 @@ export function handleSetPool(event: SetPool): void {
  */
 export function handleDeposit(event: Deposit): void {
   let lmPool = LMPool.load(event.params.pid.toString())
+  
   let position = Position.load(event.params.tokenId.toString())
   if (!lmPool || !position) return
 
@@ -99,6 +100,7 @@ export function handleDeposit(event: Deposit): void {
   position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
   position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
   position.isStaked = true
+  position.lmPool = lmPool.id
 
   // Save entities
   position.save()
@@ -132,6 +134,7 @@ export function handleWithdraw(event: Withdraw): void {
   // Update position
   position.staker = Address.fromString(ADDRESS_ZERO)
   position.isStaked = false
+  position.lmPool = lmPool.id
 
   // Save entities
   lmPool.save()
@@ -175,8 +178,24 @@ export function handleHarvest(event: Harvest): void {
 export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   let lmPool = LMPool.load(event.params.pid.toString())
   let position = Position.load(event.params.tokenId.toString())
-  if (!lmPool || !position) return
-  let liquidityDelta = event.params.liquidity;
+
+  // Log before null check
+  log.debug("Attempting to load - pid: {}, tokenId: {}", [
+    event.params.pid.toString(),
+    event.params.tokenId.toString()
+  ])
+
+  if (!lmPool || !position) {
+    log.error("Failed to load - lmPool: {}, position: {}", [
+      event.params.pid.toString(),
+      event.params.tokenId.toString()
+    ])
+    return
+  }
+
+ 
+
+  let liquidityDelta = event.params.liquidity
   lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDelta.toBigDecimal())
   
   lmPool.tvl = lmPool.stakedLiquidity
@@ -184,19 +203,24 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   position.liquidity = position.liquidity.plus(liquidityDelta)
   position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
   position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
+  position.lmPool = lmPool.id
+
+  // Now safe to access properties after null check
+  log.debug("lmPool loaded - id: {}", [lmPool.id])
+  log.debug("position loaded - id: {}", [position.id])
+
+  
   position.save()
 }
 
-
 /**
  * Handles the NewUpkeepPeriod event.
- * New signature: NewUpkeepPeriod(indexed uint256 periodNumber, uint256 startTime, uint256 endTime, uint256 huntPerSecond, uint256 cakeAmount)
- * Since no token is provided, we use WIP_ADDRESS.
  */
 export function handleNewUpkeepPeriod(event: NewUpkeepPeriod): void {
   let alphaHunter = getOrCreateAlphaHunter()
   let periodId = event.params.periodNumber.toString()
   let rewardPeriod = new RewardPeriod(periodId)
+  
   rewardPeriod.alphaHunter = alphaHunter.id
   rewardPeriod.id = periodId
   rewardPeriod.periodNumber = event.params.periodNumber
@@ -214,19 +238,24 @@ export function handleNewUpkeepPeriod(event: NewUpkeepPeriod): void {
 
 /**
  * Handles the UpdateUpkeepPeriod event.
- * New signature: UpdateUpkeepPeriod(indexed uint256 periodNumber, uint256 oldEndTime, uint256 newEndTime, uint256 remainingCake)
  */
 export function handleUpdateUpkeepPeriod(event: UpdateUpkeepPeriod): void {
   let periodId = event.params.periodNumber.toString()
   let rewardTokenId = `${WIP_ADDRESS}-${periodId}`
   let rewardToken = RewardToken.load(rewardTokenId)
-  if (!rewardToken) return
+  
+  if (!rewardToken) {
+    log.error("Failed to load reward token for period {}", [periodId])
+    return
+  }
 
   rewardToken.endTime = event.params.newEndTime
   rewardToken.save()
 }
 
 /**
- * Handles the NewPeriodDuration event. (If needed)
+ * Handles the NewPeriodDuration event.
  */
-export function handleNewPeriodDuration(event: NewPeriodDuration): void {}
+export function handleNewPeriodDuration(event: NewPeriodDuration): void {
+  // Implementation if needed
+}

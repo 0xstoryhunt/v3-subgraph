@@ -7,70 +7,70 @@ features:
   - nonFatalErrors
   - grafting
 dataSources:
-  # - kind: ethereum/contract
-  #   name: Factory
-  #   network: story
-  #   source:
-  #     abi: Factory
-  #     address: "0xb8c21e89983B5EcCD841846eA294c4c8a89718f1"
-  #     startBlock: 1265322
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/factory.ts
-  #     entities:
-  #       - Pool
-  #       - Token
-  #     abis:
-  #       - name: Factory
-  #         file: ./abis/factory.json
-  #       - name: ERC20
-  #         file: ./abis/ERC20.json
-  #       - name: ERC20SymbolBytes
-  #         file: ./abis/ERC20SymbolBytes.json
-  #       - name: ERC20NameBytes
-  #         file: ./abis/ERC20NameBytes.json
-  #       - name: Pool
-  #         file: ./abis/pool.json
-  #     eventHandlers:
-  #       - event: PoolCreated(indexed address,indexed address,indexed uint24,int24,address)
-  #         handler: handlePoolCreated
+  - kind: ethereum/contract
+    name: Factory
+    network: story
+    source:
+      abi: Factory
+      address: "0xb8c21e89983B5EcCD841846eA294c4c8a89718f1"
+      startBlock: 1137064
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/factory.ts
+      entities:
+        - Pool
+        - Token
+      abis:
+        - name: Factory
+          file: ./abis/factory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: Pool
+          file: ./abis/pool.json
+      eventHandlers:
+        - event: PoolCreated(indexed address,indexed address,indexed uint24,int24,address)
+          handler: handlePoolCreated
 
-  # - kind: ethereum/contract
-  #   name: NonfungiblePositionManager
-  #   network: story
-  #   source:
-  #     address: "0x700722D24f9256Be288f56449E8AB1D27C4a70ca" # Add the contract address
-  #     abi: NonfungiblePositionManager
-  #     startBlock: 1265322 # Add the start block
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/position-manager.ts
-  #     entities:
-  #       - Pool
-  #       - Token
-  #       - Position # Include the Position entity
-  #     abis:
-  #       - name: NonfungiblePositionManager
-  #         file: ./abis/NonfungiblePositionManager.json
-  #       - name: Pool
-  #         file: ./abis/pool.json
-  #       - name: Factory
-  #         file: ./abis/factory.json
-  #       - name: ERC20
-  #         file: ./abis/ERC20.json
-  #     eventHandlers:
-  #       - event: Collect(indexed uint256,address,uint256,uint256)
-  #         handler: handleCollect
-  #       - event: DecreaseLiquidity(indexed uint256,uint128,uint256,uint256)
-  #         handler: handleDecreaseLiquidity
-  #       - event: IncreaseLiquidity(indexed uint256,uint128,uint256,uint256)
-  #         handler: handleIncreaseLiquidity
-  #       - event: Transfer(indexed address,indexed address,indexed uint256)
-  #         handler: handleTransfer
+  - kind: ethereum/contract
+    name: NonfungiblePositionManager
+    network: story
+    source:
+      address: "0x700722D24f9256Be288f56449E8AB1D27C4a70ca" # Add the contract address
+      abi: NonfungiblePositionManager
+      startBlock: 1137064 # Add the start block
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/position-manager.ts
+      entities:
+        - Pool
+        - Token
+        - Position # Include the Position entity
+      abis:
+        - name: NonfungiblePositionManager
+          file: ./abis/NonfungiblePositionManager.json
+        - name: Pool
+          file: ./abis/pool.json
+        - name: Factory
+          file: ./abis/factory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Collect(indexed uint256,address,uint256,uint256)
+          handler: handleCollect
+        - event: DecreaseLiquidity(indexed uint256,uint128,uint256,uint256)
+          handler: handleDecreaseLiquidity
+        - event: IncreaseLiquidity(indexed uint256,uint128,uint256,uint256)
+          handler: handleIncreaseLiquidity
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
 
   # - kind: ethereum/contract
   #   name: OldAlphaHunterV3
@@ -110,95 +110,96 @@ dataSources:
   #       - event: NewPeriodDuration(uint256)
   #         handler: handleNewPeriodDuration
 
-  # - kind: ethereum/contract
-  #   name: AlphaHunterV3
-  #   network: story
-  #   source:
-  #     address: "0x71a1275090C4aa39af268b08e33e60285d10ccE3" # Replace with the new contract address
-  #     abi: AlphaHunter
-  #     startBlock: 1000000 # Replace with the correct start block for the new contract
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/lm/alphahunter.ts # Adjust file path if needed
-  #     entities:
-  #       - LMPool
-  #       - LMTransaction
-  #     abis:
-  #       - name: AlphaHunter
-  #         file: ./abis/AlphaHunter.json
-  #     eventHandlers:
-  #       - event: AddPool(indexed uint256,uint256,indexed address,indexed address)
-  #         handler: handleAddPool
-  #       - event: Deposit(indexed address,indexed uint256,indexed uint256,uint256,int24,int24)
-  #         handler: handleDeposit
-  #       - event: Harvest(indexed address,address,indexed uint256,indexed uint256,uint256)
-  #         handler: handleHarvest
-  #       - event: NewUpkeepPeriod(indexed uint256,uint256,uint256,uint256,uint256)
-  #         handler: handleNewUpkeepPeriod
-  #       - event: SetPool(indexed uint256,uint256)
-  #         handler: handleSetPool
-  #       - event: UpdateLiquidity(indexed address,indexed uint256,indexed uint256,int128,int24,int24)
-  #         handler: handleUpdateLiquidity
-  #       - event: UpdateUpkeepPeriod(indexed uint256,uint256,uint256,uint256)
-  #         handler: handleUpdateUpkeepPeriod
-  #       - event: Withdraw(indexed address,address,indexed uint256,indexed uint256)
-  #         handler: handleWithdraw
-  #       - event: NewPeriodDuration(uint256)
-  #         handler: handleNewPeriodDuration
-
   - kind: ethereum/contract
-    name: MimBokuNFT
+    name: AlphaHunterV3
     network: story
     source:
-      address: "0xe42eF0e22b5BAacb9Dcea3e7F58a82D8033f0aCA"
-      abi: MimBokuNFT
-      startBlock: 891299
+      address: "0x71a1275090C4aa39af268b08e33e60285d10ccE3" # Replace with the new contract address
+      abi: AlphaHunter
+      startBlock: 1137064 # Replace with the correct start block for the new contract
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/mappings/nft/mimboku.ts
+      file: ./src/mappings/lm/alphahunter.ts # Adjust file path if needed
       entities:
-        - NFTHolder
-        - NFTToken
-        - NFTTransfer
+        - LMPool
+        - LMTransaction
       abis:
-        - name: MimBokuNFT
-          file: ./abis/MimBokuNFT.json
+        - name: AlphaHunter
+          file: ./abis/AlphaHunter.json
       eventHandlers:
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-# templates:
-#   - kind: ethereum/contract
-#     name: Pool
-#     network: story
-#     source:
-#       abi: Pool
-#     mapping:
-#       kind: ethereum/events
-#       apiVersion: 0.0.7
-#       language: wasm/assemblyscript
-#       file: ./src/mappings/pool/index.ts
-#       entities:
-#         - Pool
-#         - Token
-#       abis:
-#         - name: Pool
-#           file: ./abis/pool.json
-#         - name: Factory
-#           file: ./abis/factory.json
-#         - name: ERC20
-#           file: ./abis/ERC20.json
-#       eventHandlers:
-#         - event: Initialize(uint160,int24)
-#           handler: handleInitialize
-#         - event: Swap(indexed address,indexed address,int256,int256,uint160,uint128,int24)
-#           handler: handleSwap
-#         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
-#           handler: handleMint
-#         - event: Burn(indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
-#           handler: handleBurn
-#         - event: Collect(indexed address,address,indexed int24,indexed int24,uint128,uint128)
-#           handler: handleCollect
+        - event: AddPool(indexed uint256,uint256,indexed address,indexed address)
+          handler: handleAddPool
+        - event: Deposit(indexed address,indexed uint256,indexed uint256,uint256,int24,int24)
+          handler: handleDeposit
+        - event: Harvest(indexed address,address,indexed uint256,indexed uint256,uint256)
+          handler: handleHarvest
+        - event: NewUpkeepPeriod(indexed uint256,uint256,uint256,uint256,uint256)
+          handler: handleNewUpkeepPeriod
+        - event: SetPool(indexed uint256,uint256)
+          handler: handleSetPool
+        - event: UpdateLiquidity(indexed address,indexed uint256,indexed uint256,int128,int24,int24)
+          handler: handleUpdateLiquidity
+        - event: UpdateUpkeepPeriod(indexed uint256,uint256,uint256,uint256)
+          handler: handleUpdateUpkeepPeriod
+        - event: Withdraw(indexed address,address,indexed uint256,indexed uint256)
+          handler: handleWithdraw
+        - event: NewPeriodDuration(uint256)
+          handler: handleNewPeriodDuration
+
+  # - kind: ethereum/contract
+  #   name: MimBokuNFT
+  #   network: story
+  #   source:
+  #     address: "0xe42eF0e22b5BAacb9Dcea3e7F58a82D8033f0aCA"
+  #     abi: MimBokuNFT
+  #     startBlock: 891299
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     file: ./src/mappings/nft/mimboku.ts
+  #     entities:
+  #       - NFTHolder
+  #       - NFTToken
+  #       - NFTTransfer
+  #     abis:
+  #       - name: MimBokuNFT
+  #         file: ./abis/MimBokuNFT.json
+  #     eventHandlers:
+  #       - event: Transfer(indexed address,indexed address,indexed uint256)
+  #         handler: handleTransfer
+
+templates:
+  - kind: ethereum/contract
+    name: Pool
+    network: story
+    source:
+      abi: Pool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/pool/index.ts
+      entities:
+        - Pool
+        - Token
+      abis:
+        - name: Pool
+          file: ./abis/pool.json
+        - name: Factory
+          file: ./abis/factory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Initialize(uint160,int24)
+          handler: handleInitialize
+        - event: Swap(indexed address,indexed address,int256,int256,uint160,uint128,int24)
+          handler: handleSwap
+        - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
+          handler: handleBurn
+        - event: Collect(indexed address,address,indexed int24,indexed int24,uint128,uint128)
+          handler: handleCollect
