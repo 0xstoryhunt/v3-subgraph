@@ -12,6 +12,7 @@ import {
 } from '../../types/AlphaHunterV3/AlphaHunter'  // Ensure these types are generated from the new ABI
 import { LMPool, LMTransaction, Pool, Position, AlphaHunter, RewardPeriod, RewardToken, PositionReward, Token } from '../../types/schema'
 import { ZERO_BD, WIP_ADDRESS, ZERO_BI, ADDRESS_ZERO } from '../../utils/constants'
+import { getPosition } from '../position-manager'
 /**
  * Helper function to get or create AlphaHunter entity.
  * Here, we do not attempt to derive the reward token from the contract;
@@ -80,7 +81,7 @@ export function handleSetPool(event: SetPool): void {
 export function handleDeposit(event: Deposit): void {
   let lmPool = LMPool.load(event.params.pid.toString())
   
-  let position = Position.load(event.params.tokenId.toString())
+  let position = getPosition(event, event.params.tokenId)
   if (!lmPool || !position) return
 
   let transaction = new LMTransaction(event.transaction.hash.toHex())
@@ -113,7 +114,7 @@ export function handleDeposit(event: Deposit): void {
  */
 export function handleWithdraw(event: Withdraw): void {
   let lmPool = LMPool.load(event.params.pid.toString())
-  let position = Position.load(event.params.tokenId.toString())
+  let position = getPosition(event, event.params.tokenId)
   if (!lmPool || !position) return
 
   let transaction = new LMTransaction(event.transaction.hash.toHex())
@@ -177,7 +178,7 @@ export function handleHarvest(event: Harvest): void {
  */
 export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   let lmPool = LMPool.load(event.params.pid.toString())
-  let position = Position.load(event.params.tokenId.toString())
+  let position = getPosition(event, event.params.tokenId)
 
   // Log before null check
   log.debug("Attempting to load - pid: {}, tokenId: {}", [
@@ -185,14 +186,19 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
     event.params.tokenId.toString()
   ])
 
-  if (!lmPool || !position) {
+  if (!lmPool) {
     log.error("Failed to load - lmPool: {}, position: {}", [
       event.params.pid.toString(),
       event.params.tokenId.toString()
     ])
     return
   }
-
+  if (!position) {
+    log.error("Failed to load - position: {}", [
+      event.params.tokenId.toString()
+    ])
+    return
+  }
  
 
   let liquidityDelta = event.params.liquidity
