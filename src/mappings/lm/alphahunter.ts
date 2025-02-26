@@ -13,6 +13,7 @@ import {
 import { LMPool, LMTransaction, Pool, Position, AlphaHunter, RewardPeriod, RewardToken, PositionReward, Token } from '../../types/schema'
 import { ZERO_BD, WIP_ADDRESS, ZERO_BI, ADDRESS_ZERO } from '../../utils/constants'
 import { getPosition } from '../position-manager'
+import { getPool } from '../../utils/pool'
 /**
  * Helper function to get or create AlphaHunter entity.
  * Here, we do not attempt to derive the reward token from the contract;
@@ -35,10 +36,14 @@ function getOrCreateAlphaHunter(): AlphaHunter {
  */
 export function handleAddPool(event: AddPool): void {
   let lmPool = new LMPool(event.params.pid.toString())
-  let v3Pool = Pool.load(event.params.v3Pool.toHexString())
+  let v3Pool = getPool(event.params.v3Pool)
 
   lmPool.id = event.params.pid.toString()
-  lmPool.pool = v3Pool ? v3Pool.id : event.params.v3Pool.toHexString()
+  if (v3Pool) {
+    lmPool.pool = v3Pool.id
+  } else {
+    lmPool.pool = event.params.v3Pool.toHexString()
+  }
   lmPool.allocPoint = event.params.allocPoint
   lmPool.stakedLiquidity = ZERO_BD
   lmPool.stakedLiquidityUSD = ZERO_BD
@@ -186,7 +191,7 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   
   lmPool.tvl = lmPool.stakedLiquidity
   lmPool.save()
-  
+
   //position.liquidity = position.liquidity.plus(liquidityDelta)
   position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
   position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)

@@ -13,6 +13,7 @@ import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI } from '../utils/consta
 import { getSubgraphConfig, SubgraphConfig } from '../utils/chains'
 import { fetchTokenSymbol } from '../utils/token'
 import { populateToken } from '../backfill'
+import { getPool } from '../utils/pool'
 
 
 export function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
@@ -35,7 +36,11 @@ export function getPosition(event: ethereum.Event, tokenId: BigInt): Position | 
         // The owner gets correctly updated in the Transfer handler
         position.owner = Address.fromString(ADDRESS_ZERO)
         position.staker = Address.fromString(ADDRESS_ZERO)
-        position.pool = poolAddress.value.toHexString()
+
+        const pool = getPool(poolAddress.value)
+        if (pool) {
+          position.pool = pool.id
+        }
 
         populateToken(positionResult.value2.toHexString(), [])  // Empty array for tokenOverrides
         populateToken(positionResult.value3.toHexString(), [])
