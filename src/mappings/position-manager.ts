@@ -7,12 +7,13 @@ import {
   NonfungiblePositionManager,
   Transfer,
 } from '../types/NonfungiblePositionManager/NonfungiblePositionManager'
-import { LMPool, Position, PositionSnapshot, Token } from '../types/schema'
+import { LMPool, Pool, Position, PositionSnapshot, Token } from '../types/schema'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
 import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI } from '../utils/constants'
 import { getSubgraphConfig, SubgraphConfig } from '../utils/chains'
 import { fetchTokenSymbol } from '../utils/token'
 import { populateToken } from '../backfill'
+
 
 export function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
   let position = Position.load(tokenId.toString())

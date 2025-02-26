@@ -180,42 +180,18 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   let lmPool = LMPool.load(event.params.pid.toString())
   let position = getPosition(event, event.params.tokenId)
 
-  // Log before null check
-  log.debug("Attempting to load - pid: {}, tokenId: {}", [
-    event.params.pid.toString(),
-    event.params.tokenId.toString()
-  ])
-
-  if (!lmPool) {
-    log.error("Failed to load - lmPool: {}, position: {}", [
-      event.params.pid.toString(),
-      event.params.tokenId.toString()
-    ])
-    return
-  }
-  if (!position) {
-    log.error("Failed to load - position: {}", [
-      event.params.tokenId.toString()
-    ])
-    return
-  }
- 
 
   let liquidityDelta = event.params.liquidity
   lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDelta.toBigDecimal())
   
   lmPool.tvl = lmPool.stakedLiquidity
   lmPool.save()
-  position.liquidity = position.liquidity.plus(liquidityDelta)
+  
+  //position.liquidity = position.liquidity.plus(liquidityDelta)
   position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
   position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
   position.lmPool = lmPool.id
 
-  // Now safe to access properties after null check
-  log.debug("lmPool loaded - id: {}", [lmPool.id])
-  log.debug("position loaded - id: {}", [position.id])
-
-  
   position.save()
 }
 

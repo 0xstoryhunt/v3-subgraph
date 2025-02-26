@@ -12,7 +12,7 @@ dataSources:
     network: story
     source:
       abi: Factory
-      address: "0xb8c21e89983B5EcCD841846eA294c4c8a89718f1"
+      address: "0xa111dDbE973094F949D78Ad755cd560F8737B7e2"
       startBlock: 1166027
     mapping:
       kind: ethereum/events
@@ -41,7 +41,7 @@ dataSources:
     name: NonfungiblePositionManager
     network: story
     source:
-      address: "0x700722D24f9256Be288f56449E8AB1D27C4a70ca" # Add the contract address
+      address: "0xb3823797B00ef062Aaa1c4B3c60149AFc6CCf7a3" # Add the contract address
       abi: NonfungiblePositionManager
       startBlock: 1166027 # Add the start block
     mapping:
@@ -71,44 +71,6 @@ dataSources:
           handler: handleIncreaseLiquidity
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-
-  # - kind: ethereum/contract
-  #   name: OldAlphaHunterV3
-  #   network: story
-  #   source:
-  #     address: "0xa31A12D2736d3371273e462f6E272db998aE8b28"
-  #     abi: OldAlphaHunterV3
-  #     startBlock: 50000 # Replace with the correct start block
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/lm/oldalphahunter.ts
-  #     entities:
-  #       - LMPool
-  #       - LMTransaction
-  #     abis:
-  #       - name: OldAlphaHunterV3
-  #         file: ./abis/OldAlphaHunterV3.json
-  #     eventHandlers:
-  #       - event: AddPool(indexed uint256,uint256,indexed address,indexed address)
-  #         handler: handleAddPool
-  #       - event: Deposit(indexed address,indexed uint256,indexed uint256,uint256,int24,int24)
-  #         handler: handleDeposit
-  #       - event: Harvest(indexed address,address,address,indexed uint256,indexed uint256,uint256)
-  #         handler: handleHarvest
-  #       - event: NewUpkeepPeriod(indexed address,indexed uint256,uint256,uint256,uint256,uint256)
-  #         handler: handleNewUpkeepPeriod
-  #       - event: SetPool(indexed uint256,uint256)
-  #         handler: handleSetPool
-  #       - event: UpdateLiquidity(indexed address,indexed uint256,indexed uint256,int128,int24,int24)
-  #         handler: handleUpdateLiquidity
-  #       - event: UpdateUpkeepPeriod(indexed address,indexed uint256,uint256,uint256,uint256)
-  #         handler: handleUpdateUpkeepPeriod
-  #       - event: Withdraw(indexed address,address,indexed uint256,indexed uint256)
-  #         handler: handleWithdraw
-  #       - event: NewPeriodDuration(uint256)
-  #         handler: handleNewPeriodDuration
 
   - kind: ethereum/contract
     name: AlphaHunterV3
