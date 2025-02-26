@@ -13,7 +13,7 @@ dataSources:
     source:
       abi: Factory
       address: "0xb8c21e89983B5EcCD841846eA294c4c8a89718f1"
-      startBlock: 1137064
+      startBlock: 1166027
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -43,7 +43,7 @@ dataSources:
     source:
       address: "0x700722D24f9256Be288f56449E8AB1D27C4a70ca" # Add the contract address
       abi: NonfungiblePositionManager
-      startBlock: 1137064 # Add the start block
+      startBlock: 1166027 # Add the start block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -116,7 +116,7 @@ dataSources:
     source:
       address: "0x71a1275090C4aa39af268b08e33e60285d10ccE3" # Replace with the new contract address
       abi: AlphaHunter
-      startBlock: 1137064 # Replace with the correct start block for the new contract
+      startBlock: 1166027 # Replace with the correct start block for the new contract
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

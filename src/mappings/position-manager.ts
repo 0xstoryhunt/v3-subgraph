@@ -14,7 +14,7 @@ import { getSubgraphConfig, SubgraphConfig } from '../utils/chains'
 import { fetchTokenSymbol } from '../utils/token'
 import { populateToken } from '../backfill'
 
-function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
+export function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
   let position = Position.load(tokenId.toString())
   if (position === null) {
     const contract = NonfungiblePositionManager.bind(event.address)
