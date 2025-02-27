@@ -1,4 +1,4 @@
-import { Address, BigInt, dataSource } from '@graphprotocol/graph-ts'
+import { Address, BigInt, dataSource, log } from '@graphprotocol/graph-ts'
 import {
   AddPool,
   SetPool,
@@ -12,6 +12,8 @@ import {
 } from '../../types/AlphaHunterV3/AlphaHunter'  // Ensure these types are generated from the new ABI
 import { LMPool, LMTransaction, Pool, Position, AlphaHunter, RewardPeriod, RewardToken, PositionReward, Token } from '../../types/schema'
 import { ZERO_BD, WIP_ADDRESS, ZERO_BI, ADDRESS_ZERO } from '../../utils/constants'
+import { getPosition } from '../position-manager'
+import { getPool } from '../../utils/pool'
 /**
  * Helper function to get or create AlphaHunter entity.
  * Here, we do not attempt to derive the reward token from the contract;
@@ -34,10 +36,14 @@ function getOrCreateAlphaHunter(): AlphaHunter {
  */
 export function handleAddPool(event: AddPool): void {
   let lmPool = new LMPool(event.params.pid.toString())
-  let v3Pool = Pool.load(event.params.v3Pool.toHexString())
+  let v3Pool = getPool(event.params.v3Pool)
 
   lmPool.id = event.params.pid.toString()
-  lmPool.pool = v3Pool ? v3Pool.id : event.params.v3Pool.toHexString()
+  if (v3Pool) {
+    lmPool.pool = v3Pool.id
+  } else {
+    lmPool.pool = event.params.v3Pool.toHexString()
+  }
   lmPool.allocPoint = event.params.allocPoint
   lmPool.stakedLiquidity = ZERO_BD
   lmPool.stakedLiquidityUSD = ZERO_BD
@@ -79,7 +85,8 @@ export function handleSetPool(event: SetPool): void {
  */
 export function handleDeposit(event: Deposit): void {
   let lmPool = LMPool.load(event.params.pid.toString())
-  let position = Position.load(event.params.tokenId.toString())
+  
+  let position = getPosition(event, event.params.tokenId)
   if (!lmPool || !position) return
 
   let transaction = new LMTransaction(event.transaction.hash.toHex())
@@ -90,15 +97,16 @@ export function handleDeposit(event: Deposit): void {
   transaction.reward = ZERO_BD
   transaction.timestamp = event.block.timestamp
 
-  // Update pool stats
-  lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(transaction.amount)
-  lmPool.tvl = lmPool.stakedLiquidity
+  // // Update pool stats
+  // lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(transaction.amount)
+  // lmPool.tvl = lmPool.stakedLiquidity
 
   // Update position
   position.staker = event.params.from
   position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
   position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
   position.isStaked = true
+  position.lmPool = lmPool.id
 
   // Save entities
   position.save()
@@ -111,7 +119,7 @@ export function handleDeposit(event: Deposit): void {
  */
 export function handleWithdraw(event: Withdraw): void {
   let lmPool = LMPool.load(event.params.pid.toString())
-  let position = Position.load(event.params.tokenId.toString())
+  let position = getPosition(event, event.params.tokenId)
   if (!lmPool || !position) return
 
   let transaction = new LMTransaction(event.transaction.hash.toHex())
@@ -122,16 +130,17 @@ export function handleWithdraw(event: Withdraw): void {
   transaction.reward = ZERO_BD
   transaction.timestamp = event.block.timestamp
 
-  // Update pool stats
-  lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(transaction.amount)
-  if (lmPool.stakedLiquidity.lt(ZERO_BD)) {
-    lmPool.stakedLiquidity = ZERO_BD
-  }
-  lmPool.tvl = lmPool.stakedLiquidity
+  // // Update pool stats
+  // lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(transaction.amount)
+  // if (lmPool.stakedLiquidity.lt(ZERO_BD)) {
+  //   lmPool.stakedLiquidity = ZERO_BD
+  // }
+  // lmPool.tvl = lmPool.stakedLiquidity
 
   // Update position
   position.staker = Address.fromString(ADDRESS_ZERO)
   position.isStaked = false
+  position.lmPool = lmPool.id
 
   // Save entities
   lmPool.save()
@@ -174,29 +183,33 @@ export function handleHarvest(event: Harvest): void {
  */
 export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   let lmPool = LMPool.load(event.params.pid.toString())
-  let position = Position.load(event.params.tokenId.toString())
+
+  let position = getPosition(event, event.params.tokenId)
+
   if (!lmPool || !position) return
-  let liquidityDelta = event.params.liquidity;
+
+  let liquidityDelta = event.params.liquidity
   lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDelta.toBigDecimal())
   
   lmPool.tvl = lmPool.stakedLiquidity
   lmPool.save()
-  position.liquidity = position.liquidity.plus(liquidityDelta)
+
+  //position.liquidity = position.liquidity.plus(liquidityDelta)
   position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
   position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
+  position.lmPool = lmPool.id
+
   position.save()
 }
 
-
 /**
  * Handles the NewUpkeepPeriod event.
- * New signature: NewUpkeepPeriod(indexed uint256 periodNumber, uint256 startTime, uint256 endTime, uint256 huntPerSecond, uint256 cakeAmount)
- * Since no token is provided, we use WIP_ADDRESS.
  */
 export function handleNewUpkeepPeriod(event: NewUpkeepPeriod): void {
   let alphaHunter = getOrCreateAlphaHunter()
   let periodId = event.params.periodNumber.toString()
   let rewardPeriod = new RewardPeriod(periodId)
+  
   rewardPeriod.alphaHunter = alphaHunter.id
   rewardPeriod.id = periodId
   rewardPeriod.periodNumber = event.params.periodNumber
@@ -214,19 +227,24 @@ export function handleNewUpkeepPeriod(event: NewUpkeepPeriod): void {
 
 /**
  * Handles the UpdateUpkeepPeriod event.
- * New signature: UpdateUpkeepPeriod(indexed uint256 periodNumber, uint256 oldEndTime, uint256 newEndTime, uint256 remainingCake)
  */
 export function handleUpdateUpkeepPeriod(event: UpdateUpkeepPeriod): void {
   let periodId = event.params.periodNumber.toString()
   let rewardTokenId = `${WIP_ADDRESS}-${periodId}`
   let rewardToken = RewardToken.load(rewardTokenId)
-  if (!rewardToken) return
+  
+  if (!rewardToken) {
+    log.error("Failed to load reward token for period {}", [periodId])
+    return
+  }
 
   rewardToken.endTime = event.params.newEndTime
   rewardToken.save()
 }
 
 /**
- * Handles the NewPeriodDuration event. (If needed)
+ * Handles the NewPeriodDuration event.
  */
-export function handleNewPeriodDuration(event: NewPeriodDuration): void {}
+export function handleNewPeriodDuration(event: NewPeriodDuration): void {
+  // Implementation if needed
+}

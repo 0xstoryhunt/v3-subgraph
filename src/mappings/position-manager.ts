@@ -7,12 +7,16 @@ import {
   NonfungiblePositionManager,
   Transfer,
 } from '../types/NonfungiblePositionManager/NonfungiblePositionManager'
-import { LMPool, Position, PositionSnapshot, Token } from '../types/schema'
+import { LMPool, Pool, Position, PositionSnapshot, Token } from '../types/schema'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
 import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI } from '../utils/constants'
 import { getSubgraphConfig, SubgraphConfig } from '../utils/chains'
+import { fetchTokenSymbol } from '../utils/token'
+import { populateToken } from '../backfill'
+import { getPool } from '../utils/pool'
 
-function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
+
+export function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
   let position = Position.load(tokenId.toString())
   if (position === null) {
     const contract = NonfungiblePositionManager.bind(event.address)
@@ -32,12 +36,30 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
         // The owner gets correctly updated in the Transfer handler
         position.owner = Address.fromString(ADDRESS_ZERO)
         position.staker = Address.fromString(ADDRESS_ZERO)
-        position.pool = poolAddress.value.toHexString()
-        position.token0 = positionResult.value2.toHexString()
-        position.token1 = positionResult.value3.toHexString()
+
+        const pool = getPool(poolAddress.value)
+        if (pool) {
+          position.pool = pool.id
+        }
+
+        populateToken(positionResult.value2.toHexString(), [])  // Empty array for tokenOverrides
+        populateToken(positionResult.value3.toHexString(), [])
+
+        const token0 = Token.load(positionResult.value2.toHexString())
+        const token1 = Token.load(positionResult.value3.toHexString())
+        if (token0 && token1){
+          position.token0 = token0.id
+          position.token1 = token1.id
+        }
+        
         position.tickLower = position.pool.concat('#').concat(positionResult.value5.toString())
         position.tickUpper = position.pool.concat('#').concat(positionResult.value6.toString())
-        position.liquidity = ZERO_BI
+        position.tickLowerInt = BigInt.fromI32(positionResult.value5)
+        position.tickUpperInt = BigInt.fromI32(positionResult.value6)
+
+        position.liquidity = positionResult.value7  // Get initial liquidity from contract
+        position.isFirstLiquidityLoad = true  // Add flag to indicate initial load
+
         position.depositedToken0 = ZERO_BD
         position.depositedToken1 = ZERO_BD
         position.withdrawnToken0 = ZERO_BD
@@ -48,17 +70,12 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
         position.feeGrowthInside0LastX128 = positionResult.value8
         position.feeGrowthInside1LastX128 = positionResult.value9
         position.isStaked = false
-
-        const lmPool = LMPool.load(poolAddress.value.toHexString());
-        if (lmPool !== null) {
-          position.lmPool = lmPool.id;
-        }
-
       }
     }
   }
   return position
 }
+
 function updateFeeVars(position: Position, event: ethereum.Event, tokenId: BigInt): Position {
   const positionManagerContract = NonfungiblePositionManager.bind(event.address)
   const positionResult = positionManagerContract.try_positions(tokenId)
@@ -87,6 +104,7 @@ function savePositionSnapshot(position: Position, event: ethereum.Event): void {
   positionSnapshot.feeGrowthInside1LastX128 = position.feeGrowthInside1LastX128
   positionSnapshot.save()
 }
+
 export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
   const position = getPosition(event, event.params.tokenId)
 
@@ -100,7 +118,11 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
   if (token0 && token1) {
     const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
     const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
-    position.liquidity = position.liquidity.plus(event.params.liquidity)
+    if (!position.isFirstLiquidityLoad) {
+      position.liquidity = position.liquidity.plus(event.params.liquidity)
+    }
+    position.isFirstLiquidityLoad = false
+    
     position.depositedToken0 = position.depositedToken0.plus(amount0)
     position.depositedToken1 = position.depositedToken1.plus(amount1)
     updateFeeVars(position, event, event.params.tokenId)
@@ -120,7 +142,10 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
   if (token0 && token1) {
     const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
     const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
-    position.liquidity = position.liquidity.minus(event.params.liquidity)
+    if (!position.isFirstLiquidityLoad){
+      position.liquidity = position.liquidity.minus(event.params.liquidity)
+    }
+    position.isFirstLiquidityLoad = false
     position.withdrawnToken0 = position.withdrawnToken0.plus(amount0)
     position.withdrawnToken1 = position.withdrawnToken1.plus(amount1)
     position = updateFeeVars(position, event, event.params.tokenId)
@@ -135,10 +160,12 @@ export function handleCollect(event: Collect): void {
     return
   }
   const token0 = Token.load(position.token0)
-  if (token0) {
+  const token1 = Token.load(position.token1)
+  if (token0 && token1) {
     const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
+    const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
     position.collectedFeesToken0 = position.collectedFeesToken0.plus(amount0)
-    position.collectedFeesToken1 = position.collectedFeesToken1.plus(amount0)
+    position.collectedFeesToken1 = position.collectedFeesToken1.plus(amount1)
   }
   position = updateFeeVars(position, event, event.params.tokenId)
   position.save()
