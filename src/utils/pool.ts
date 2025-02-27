@@ -3,7 +3,7 @@ import { Pool as PoolContract } from '../types/templates/Pool/Pool'
 import { Pool, Token } from '../types/schema'
 import { ZERO_BD, ZERO_BI } from './constants'
 
-export function getPool(poolAddress: Address): Pool | null {
+export function getPool(poolAddress: Address ): Pool | null {
   let pool = Pool.load(poolAddress.toHexString())
   if (pool === null) {
     const poolContract = PoolContract.bind(poolAddress)
@@ -49,6 +49,22 @@ export function getPool(poolAddress: Address): Pool | null {
       pool.volumeToken1 = ZERO_BD
       pool.volumeUSD = ZERO_BD
       pool.feesUSD = ZERO_BD
+
+      // Add missing required fields
+      pool.createdAtTimestamp = ZERO_BI
+      pool.createdAtBlockNumber = ZERO_BI
+      pool.untrackedVolumeUSD = ZERO_BD
+      pool.collectedFeesToken0 = ZERO_BD
+      pool.collectedFeesToken1 = ZERO_BD
+      pool.collectedFeesUSD = ZERO_BD
+      pool.totalValueLockedIP = ZERO_BD
+      pool.totalValueLockedUSDUntracked = ZERO_BD
+      pool.liquidityProviderCount = ZERO_BI
+      pool.feesIP = ZERO_BD
+      pool.feeAPRUSD = ZERO_BD
+      pool.feeAPRIP = ZERO_BD
+      pool.from = ''
+      pool.lmPool = null
 
       pool.save()
     }

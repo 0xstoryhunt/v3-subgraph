@@ -97,9 +97,9 @@ export function handleDeposit(event: Deposit): void {
   transaction.reward = ZERO_BD
   transaction.timestamp = event.block.timestamp
 
-  // Update pool stats
-  lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(transaction.amount)
-  lmPool.tvl = lmPool.stakedLiquidity
+  // // Update pool stats
+  // lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(transaction.amount)
+  // lmPool.tvl = lmPool.stakedLiquidity
 
   // Update position
   position.staker = event.params.from
@@ -130,12 +130,12 @@ export function handleWithdraw(event: Withdraw): void {
   transaction.reward = ZERO_BD
   transaction.timestamp = event.block.timestamp
 
-  // Update pool stats
-  lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(transaction.amount)
-  if (lmPool.stakedLiquidity.lt(ZERO_BD)) {
-    lmPool.stakedLiquidity = ZERO_BD
-  }
-  lmPool.tvl = lmPool.stakedLiquidity
+  // // Update pool stats
+  // lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(transaction.amount)
+  // if (lmPool.stakedLiquidity.lt(ZERO_BD)) {
+  //   lmPool.stakedLiquidity = ZERO_BD
+  // }
+  // lmPool.tvl = lmPool.stakedLiquidity
 
   // Update position
   position.staker = Address.fromString(ADDRESS_ZERO)
@@ -183,8 +183,10 @@ export function handleHarvest(event: Harvest): void {
  */
 export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   let lmPool = LMPool.load(event.params.pid.toString())
+
   let position = getPosition(event, event.params.tokenId)
 
+  if (!lmPool || !position) return
 
   let liquidityDelta = event.params.liquidity
   lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(liquidityDelta.toBigDecimal())
