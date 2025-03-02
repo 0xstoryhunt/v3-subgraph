@@ -296,9 +296,9 @@ export function handleSwapHelper(
     swap.pool = pool.id
     swap.token0 = pool.token0
     swap.token1 = pool.token1
-    swap.sender = event.params.sender
-    swap.origin = event.transaction.from
-    swap.recipient = event.params.recipient
+    swap.sender = event.params.sender.toHexString()
+    swap.origin = event.transaction.from.toHexString()
+    swap.recipient = event.params.recipient.toHexString()
     swap.amount0 = amount0
     swap.amount1 = amount1
     swap.amountUSD = validatedAmountTotalUSDTracked
