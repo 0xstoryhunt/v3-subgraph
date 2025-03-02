@@ -85,7 +85,7 @@ export function handleCollectHelper(event: CollectEvent, subgraphConfig: Subgrap
   collect.transaction = transaction.id
   collect.timestamp = event.block.timestamp
   collect.pool = pool.id
-  collect.owner = event.params.owner
+  collect.owner = event.params.owner.toHexString()
   collect.amount0 = collectedAmountToken0
   collect.amount1 = collectedAmountToken1
   collect.amountUSD = trackedCollectedAmountUSD

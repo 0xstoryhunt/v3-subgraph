@@ -84,7 +84,7 @@ export function handleDeposit(event: Deposit): void {
 
   let transaction = new LMTransaction(event.transaction.hash.toHex())
   transaction.type = 'Stake'
-  transaction.user = event.params.from
+  transaction.user = event.params.from.toHexString()
   transaction.pool = lmPool.id
   transaction.amount = event.params.liquidity.toBigDecimal()
   transaction.reward = ZERO_BD
@@ -116,7 +116,7 @@ export function handleWithdraw(event: Withdraw): void {
 
   let transaction = new LMTransaction(event.transaction.hash.toHex())
   transaction.type = 'Unstake'
-  transaction.user = event.params.from
+  transaction.user = event.params.from.toHexString()
   transaction.pool = lmPool.id
   transaction.amount = position.liquidity.toBigDecimal() // If needed, calculate actual 'liquidity removed'
   transaction.reward = ZERO_BD
@@ -161,7 +161,7 @@ export function handleHarvest(event: Harvest): void {
 
   let transaction = new LMTransaction(event.transaction.hash.toHex());
   transaction.type = "Harvest";
-  transaction.user = event.params.sender;
+  transaction.user = event.params.sender.toHexString();
   transaction.pool = event.params.pid.toString();
   transaction.amount = ZERO_BD;
   transaction.reward = event.params.reward.toBigDecimal();

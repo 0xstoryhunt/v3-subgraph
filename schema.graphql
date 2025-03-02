@@ -303,11 +303,11 @@ type Mint @entity {
   # allow indexing by tokens
   token1: Token!
   # owner of position where liquidity minted to
-  owner: Bytes!
+  owner: String!
   # the address that minted the liquidity
-  sender: Bytes
+  sender: String
   # txn origin
-  origin: Bytes! # the EOA that initiated the txn
+  origin: String! # the EOA that initiated the txn
   # amount of liquidity minted
   amount: BigInt!
   # amount of token 0 minted
@@ -338,9 +338,9 @@ type Burn @entity {
   # need this to pull recent txns for specific token or pool
   timestamp: BigInt!
   # owner of position where liquidity was burned
-  owner: Bytes
+  owner: String
   # txn origin
-  origin: Bytes! # the EOA that initiated the txn
+  origin: String! # the EOA that initiated the txn
   # amouny of liquidity burned
   amount: BigInt!
   # amount of token 0 burned
@@ -371,11 +371,11 @@ type Swap @entity {
   # allow indexing by tokens
   token1: Token!
   # sender of the swap
-  sender: Bytes!
+  sender: String!
   # recipient of the swap
-  recipient: Bytes!
+  recipient: String!
   # txn origin
-  origin: Bytes! # the EOA that initiated the txn
+  origin: String! # the EOA that initiated the txn
   # delta of token0 swapped
   amount0: BigDecimal!
   # delta of token1 swapped
@@ -400,7 +400,7 @@ type Collect @entity {
   # pool collect occured within
   pool: Pool!
   # owner of position collect was performed on
-  owner: Bytes
+  owner: String
   # amount of token0 collected
   amount0: BigDecimal!
   # amount of token1 collected
@@ -426,9 +426,9 @@ type Flash @entity {
   # pool collect occured within
   pool: Pool!
   # sender of the flash
-  sender: Bytes!
+  sender: String!
   # recipient of the flash
-  recipient: Bytes!
+  recipient: String!
   # amount of token0 flashed
   amount0: BigDecimal!
   # amount of token1 flashed
@@ -681,7 +681,7 @@ type LMPool @entity {
 type LMTransaction @entity {
   id: ID! # Unique transaction ID
   type: String! # "Deposit", "Withdraw", "Harvest"
-  user: Bytes! # User address
+  user: String! # User address
   pool: LMPool! # Reference to LM Pool
   amount: BigDecimal! # Liquidity deposited or withdrawn
   reward: BigDecimal # Rewards harvested
