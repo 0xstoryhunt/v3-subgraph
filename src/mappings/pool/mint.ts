@@ -85,9 +85,9 @@ export function handleMintHelper(event: MintEvent, subgraphConfig: SubgraphConfi
     mint.pool = pool.id
     mint.token0 = pool.token0
     mint.token1 = pool.token1
-    mint.owner = event.params.owner
-    mint.sender = event.params.sender
-    mint.origin = event.transaction.from
+    mint.owner = event.params.owner.toHexString()
+    mint.sender = event.params.sender.toHexString()
+    mint.origin = event.transaction.from.toHexString()
     mint.amount = event.params.amount
     mint.amount0 = amount0
     mint.amount1 = amount1

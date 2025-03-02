@@ -69,8 +69,8 @@ export function handleBurnHelper(event: BurnEvent, subgraphConfig: SubgraphConfi
     burn.pool = pool.id
     burn.token0 = pool.token0
     burn.token1 = pool.token1
-    burn.owner = event.params.owner
-    burn.origin = event.transaction.from
+    burn.owner = event.params.owner.toHexString()
+    burn.origin = event.transaction.from.toHexString()
     burn.amount = event.params.amount
     burn.amount0 = amount0
     burn.amount1 = amount1
