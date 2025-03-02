@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 
-import { Bundle, Factory, Pool, PoolDayData, Swap, Token } from '../../types/schema'
+import { Bundle, Factory, Pool, PoolDayData, Swap, Token, User, UserTokenStats } from '../../types/schema'
 import { Swap as SwapEvent } from '../../types/templates/Pool/Pool'
 import { convertTokenToDecimal, loadTransaction, safeDiv } from '../../utils'
 import { getSubgraphConfig, SubgraphConfig } from '../../utils/chains'
@@ -155,12 +155,26 @@ export function handleSwapHelper(
     pool.feesUSD = pool.feesUSD.plus(feesUSD)
     pool.txCount = pool.txCount.plus(ONE_BI)
 
+    // Calculate the value of the tokens before the swap
+    const valueBeforeSwapToken0 = pool.totalValueLockedToken0.times(token0.derivedIP).times(bundle.IPPriceUSD);
+    const valueBeforeSwapToken1 = pool.totalValueLockedToken1.times(token1.derivedIP).times(bundle.IPPriceUSD);
+    const totalValueBeforeSwap = valueBeforeSwapToken0.plus(valueBeforeSwapToken1);
+
     // update pool state with new liquidity, price, and tick.
     pool.liquidity = event.params.liquidity
     pool.tick = BigInt.fromI32(event.params.tick)
     pool.sqrtPrice = event.params.sqrtPriceX96
     pool.totalValueLockedToken0 = pool.totalValueLockedToken0.plus(amount0)
     pool.totalValueLockedToken1 = pool.totalValueLockedToken1.plus(amount1)
+
+    // Calculate the value of the tokens after the swap
+    const valueAfterSwapToken0 = pool.totalValueLockedToken0.times(token0.derivedIP).times(bundle.IPPriceUSD);
+    const valueAfterSwapToken1 = pool.totalValueLockedToken1.times(token1.derivedIP).times(bundle.IPPriceUSD);
+    const totalValueAfterSwap = valueAfterSwapToken0.plus(valueAfterSwapToken1);
+
+    // Calculate PnL
+    const pnlUSD = totalValueAfterSwap.minus(totalValueBeforeSwap);
+    const pnlIP = safeDiv(pnlUSD, bundle.IPPriceUSD);
 
     // update token0 data
     token0.volume = token0.volume.plus(amount0Abs)
@@ -232,6 +246,48 @@ export function handleSwapHelper(
     token0.totalValueLockedUSD = token0.totalValueLocked.times(token0.derivedIP).times(bundle.IPPriceUSD)
     token1.totalValueLockedUSD = token1.totalValueLocked.times(token1.derivedIP).times(bundle.IPPriceUSD)
 
+    // Update UserTokenStats for the sender and tokens
+
+    // Get or create UserTokenStats for the sender and token0
+    let userToken0Stats = UserTokenStats.load(event.transaction.from.toHexString() + "-" + token0.id);
+    if (!userToken0Stats) {
+      userToken0Stats = new UserTokenStats(event.transaction.from.toHexString() + "-" + token0.id);
+      userToken0Stats.user = event.transaction.from;
+      userToken0Stats.token = token0.id;
+      userToken0Stats.swapVolumeUSD = ZERO_BD;
+      userToken0Stats.realizedPnlUSD = ZERO_BD;
+      userToken0Stats.unrealizedPnlUSD = ZERO_BD;
+    }
+    userToken0Stats.swapVolumeUSD = userToken0Stats.swapVolumeUSD.plus(validatedAmountTotalUSDTracked);
+    userToken0Stats.realizedPnlUSD = userToken0Stats.realizedPnlUSD.plus(pnlUSD);
+    userToken0Stats.save();
+
+    // Get or create UserTokenStats for the sender and token1
+    let userToken1Stats = UserTokenStats.load(event.transaction.from.toHexString() + "-" + token1.id);
+    if (!userToken1Stats) {
+      userToken1Stats = new UserTokenStats(event.transaction.from.toHexString() + "-" + token1.id);
+      userToken1Stats.user = event.transaction.from;
+      userToken1Stats.token = token1.id;
+      userToken1Stats.swapVolumeUSD = ZERO_BD;
+      userToken1Stats.realizedPnlUSD = ZERO_BD;
+      userToken1Stats.unrealizedPnlUSD = ZERO_BD;
+    }
+    userToken1Stats.swapVolumeUSD = userToken1Stats.swapVolumeUSD.plus(validatedAmountTotalUSDTracked);
+    userToken1Stats.realizedPnlUSD = userToken1Stats.realizedPnlUSD.plus(pnlUSD);
+    userToken1Stats.save();
+
+    // Update User entity ---
+    let user = User.load(event.transaction.from.toHexString());
+    if (!user) {
+      user = new User(event.transaction.from.toHexString());
+      user.totalSwapVolumeUSD = ZERO_BD;
+      user.totalRealizedPnlUSD = ZERO_BD;
+      user.totalUnrealizedPnlUSD = ZERO_BD;
+    }
+    user.totalSwapVolumeUSD = user.totalSwapVolumeUSD.plus(validatedAmountTotalUSDTracked);
+    user.totalRealizedPnlUSD = user.totalRealizedPnlUSD.plus(pnlUSD);
+    user.save();
+
     // create Swap event
     const transaction = loadTransaction(event, pool.id)
     const swap = new Swap(transaction.id + '-' + event.logIndex.toString())
@@ -249,6 +305,8 @@ export function handleSwapHelper(
     swap.tick = BigInt.fromI32(event.params.tick)
     swap.sqrtPriceX96 = event.params.sqrtPriceX96
     swap.logIndex = event.logIndex
+    swap.pnlUSD = pnlUSD || ZERO_BD
+    swap.pnlIP = pnlIP || ZERO_BD
 
     // interval data updates
     const storyhuntDayData = updateStoryHuntDayData(event, factoryAddress)
