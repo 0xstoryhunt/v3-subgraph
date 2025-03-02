@@ -91,8 +91,8 @@ export function handleDeposit(event: Deposit): void {
   transaction.timestamp = event.block.timestamp
 
   // Update pool stats
-  lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(transaction.amount)
-  lmPool.tvl = lmPool.stakedLiquidity
+  // lmPool.stakedLiquidity = lmPool.stakedLiquidity.plus(transaction.amount)
+  // lmPool.tvl = lmPool.stakedLiquidity
 
   // Update position
   position.staker = event.params.from
@@ -123,11 +123,11 @@ export function handleWithdraw(event: Withdraw): void {
   transaction.timestamp = event.block.timestamp
 
   // Update pool stats
-  lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(transaction.amount)
-  if (lmPool.stakedLiquidity.lt(ZERO_BD)) {
-    lmPool.stakedLiquidity = ZERO_BD
-  }
-  lmPool.tvl = lmPool.stakedLiquidity
+  // lmPool.stakedLiquidity = lmPool.stakedLiquidity.minus(transaction.amount)
+  // if (lmPool.stakedLiquidity.lt(ZERO_BD)) {
+  //   lmPool.stakedLiquidity = ZERO_BD
+  // }
+  // lmPool.tvl = lmPool.stakedLiquidity
 
   // Update position
   position.staker = Address.fromString(ADDRESS_ZERO)
@@ -181,9 +181,10 @@ export function handleUpdateLiquidity(event: UpdateLiquidity): void {
   
   lmPool.tvl = lmPool.stakedLiquidity
   lmPool.save()
-  position.liquidity = position.liquidity.plus(liquidityDelta)
+  //position.liquidity = position.liquidity.plus(liquidityDelta)
   position.tickLowerInt = BigInt.fromI32(event.params.tickLower)
   position.tickUpperInt = BigInt.fromI32(event.params.tickUpper)
+  position.lmPool = lmPool.id
   position.save()
 }
 

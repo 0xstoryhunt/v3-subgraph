@@ -37,7 +37,7 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
         position.token1 = positionResult.value3.toHexString()
         position.tickLower = position.pool.concat('#').concat(positionResult.value5.toString())
         position.tickUpper = position.pool.concat('#').concat(positionResult.value6.toString())
-        position.liquidity = ZERO_BI
+        position.liquidity = positionResult.value7;
         position.depositedToken0 = ZERO_BD
         position.depositedToken1 = ZERO_BD
         position.withdrawnToken0 = ZERO_BD
@@ -135,10 +135,12 @@ export function handleCollect(event: Collect): void {
     return
   }
   const token0 = Token.load(position.token0)
-  if (token0) {
+  const token1 = Token.load(position.token1)
+  if (token0 && token1) {
     const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
+    const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
     position.collectedFeesToken0 = position.collectedFeesToken0.plus(amount0)
-    position.collectedFeesToken1 = position.collectedFeesToken1.plus(amount0)
+    position.collectedFeesToken1 = position.collectedFeesToken1.plus(amount1)
   }
   position = updateFeeVars(position, event, event.params.tokenId)
   position.save()

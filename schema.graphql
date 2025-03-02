@@ -388,6 +388,26 @@ type Swap @entity {
   tick: BigInt!
   # index within the txn
   logIndex: BigInt
+  # PnL in USD
+  pnlUSD: BigDecimal! 
+  # PnL in IP (native token)
+  pnlIP: BigDecimal!   
+}
+
+type User @entity {
+    id: ID!                     # User address
+    totalSwapVolumeUSD: BigDecimal!  # Total swap volume in USD across all tokens
+    totalRealizedPnlUSD: BigDecimal! # Total realized PnL in USD across all tokens
+    totalUnrealizedPnlUSD: BigDecimal! # Total unrealized PnL in USD across all tokens
+}
+
+type UserTokenStats @entity {
+    id: ID!                     # Composite ID: userAddress-tokenAddress
+    user: Bytes!                # User address
+    token: Token!               # Token entity
+    swapVolumeUSD: BigDecimal!  # Total swap volume in USD
+    realizedPnlUSD: BigDecimal! # Total realized PnL in USD
+    unrealizedPnlUSD: BigDecimal! # Total unrealized PnL in USD
 }
 
 type Collect @entity {

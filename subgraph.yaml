@@ -92,24 +92,12 @@ dataSources:
         - name: OldAlphaHunterV3
           file: ./abis/OldAlphaHunterV3.json
       eventHandlers:
-        - event: AddPool(indexed uint256,uint256,indexed address,indexed address)
-          handler: handleAddPool
         - event: Deposit(indexed address,indexed uint256,indexed uint256,uint256,int24,int24)
           handler: handleDeposit
         - event: Harvest(indexed address,address,address,indexed uint256,indexed uint256,uint256)
           handler: handleHarvest
-        - event: NewUpkeepPeriod(indexed address,indexed uint256,uint256,uint256,uint256,uint256)
-          handler: handleNewUpkeepPeriod
-        - event: SetPool(indexed uint256,uint256)
-          handler: handleSetPool
-        - event: UpdateLiquidity(indexed address,indexed uint256,indexed uint256,int128,int24,int24)
-          handler: handleUpdateLiquidity
-        - event: UpdateUpkeepPeriod(indexed address,indexed uint256,uint256,uint256,uint256)
-          handler: handleUpdateUpkeepPeriod
         - event: Withdraw(indexed address,address,indexed uint256,indexed uint256)
           handler: handleWithdraw
-        - event: NewPeriodDuration(uint256)
-          handler: handleNewPeriodDuration
 
   - kind: ethereum/contract
     name: AlphaHunterV3
