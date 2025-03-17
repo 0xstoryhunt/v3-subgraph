@@ -8,32 +8,11 @@ features:
   - grafting
 dataSources:
   - kind: ethereum/contract
-    name: StoryHuntTokenLaunchpad
-    network: story-aeneid
-    source:
-      abi: StoryHuntTokenLaunchpad
-      address: '0x1B17a3a024Cfe565337F784506265dAD1c1F1A7c'
-      startBlock: 600000
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/mappings/token-launchpad.ts
-      entities:
-        - CreatedToken
-      abis:
-        - name: StoryHuntTokenLaunchpad
-          file: ./abis/StoryHuntTokenLaunchpad.json
-      eventHandlers:
-        - event: TokenCreated(indexed address,indexed address,string,string,uint256)
-          handler: handleTokenCreated
-
-  - kind: ethereum/contract
     name: Factory
     network: story-aeneid
     source:
       abi: Factory
-      address: '0x57232FAb5a3269D3d77457bcE96aADD455f274cB'
+      address: '0xB0d76e6C7aA7a78A00Af1A1083B4732a488700b4'
       startBlock: 600000
     mapping:
       kind: ethereum/events
@@ -62,7 +41,7 @@ dataSources:
     name: NonfungiblePositionManager
     network: story-aeneid
     source:
-      address: '0x8d5B4F1db0C023dd113EDE4d0632D57d2212efA5' # Add the contract address
+      address: '0xa09B218862abfAFB67A5E356b6f507F0e0Ce061E' # Add the contract address
       abi: NonfungiblePositionManager
       startBlock: 600000 # Add the start block
     mapping:
@@ -97,7 +76,7 @@ dataSources:
     name: AlphaHunterV3
     network: story-aeneid
     source:
-      address: '0x31028C208C6d33bFD66605c2E3D593965fdceBDb'
+      address: '0x774a44C1CBC75FCBD4Dc81F7b78E7C2796D25834'
       abi: AlphaHunterV3
       startBlock: 600000 # Replace with the correct start block
     mapping:
