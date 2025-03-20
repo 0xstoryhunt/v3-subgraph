@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt, dataSource } from '@graphprotocol/graph-ts'
-import { ODYSSEY_TESTNET_NAME, STABLECOIN_ADDRESSES, STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, STORY_MAINNET_NAME, STORY_TESTNET_NAME, V3_FACTORY_CONTRACT, WHITELIST_TOKEN_ADDRESSES, WIP_ADDRESS } from './constants'
+import { ODYSSEY_TESTNET_NAME, POOLS_TO_SKIP, STABLECOIN_ADDRESSES, STABLECOIN_WRAPPEDNATIVE_POOLADDRESS, STORY_MAINNET_NAME, STORY_TESTNET_NAME, V3_FACTORY_CONTRACT, WHITELIST_TOKEN_ADDRESSES, WIP_ADDRESS } from './constants'
 import { StaticTokenDefinition } from './staticTokenDefinition'
 
 // Note: All token and pool addresses should be lowercased!
@@ -58,7 +58,7 @@ export function getSubgraphConfig(): SubgraphConfig {
       stablecoinAddresses: STABLECOIN_ADDRESSES,
       whitelistTokens: WHITELIST_TOKEN_ADDRESSES,
       tokenOverrides: [],
-      poolsToSkip: [],
+      poolsToSkip: POOLS_TO_SKIP,
       poolMappings: [],
     }
   } else {
