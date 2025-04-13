@@ -12,7 +12,8 @@
     "test": "graph test -d",
     "test:no-tty": "docker run -i --rm --mount type=bind,source=$INIT_CWD,target=/matchstick matchstick",
     "deploy": "goldsky subgraph deploy mainnet/1.0.0-story-hunt-address-string",
-    "deploy-local": "graph create uniswap-v3-story --node http://localhost:8020 && graph deploy uniswap-v3-story --ipfs http://127.0.0.1:5001 --node http://localhost:8020 subgraph.yaml"
+    "deploy-local": "graph create uniswap-v3-story --node http://localhost:8020 && graph deploy uniswap-v3-story --ipfs http://127.0.0.1:5001 --node http://localhost:8020 subgraph.yaml",
+    "deploy-dev": "graph create uniswap-v3-story --node http://ec2-3-95-2-220.compute-1.amazonaws.com:8020 && graph deploy uniswap-v3-story --ipfs http://ec2-3-95-2-220.compute-1.amazonaws.com:5001 --node http://ec2-3-95-2-220.compute-1.amazonaws.com:8020 subgraph.yaml"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.64.1",

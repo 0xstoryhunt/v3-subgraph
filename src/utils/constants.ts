@@ -30,5 +30,5 @@ export const factoryContract = FactoryContract.bind(Address.fromString(V3_FACTOR
 //supported chains
 // subgraph does not support string enums, hence these constants
 export const STORY_TESTNET_NAME = 'story-aeneid'
-export const STORY_MAINNET_NAME = 'story'
+export const STORY_MAINNET_NAME = 'story-mainnet'
 export const ODYSSEY_TESTNET_NAME = 'odyssey-testnet'

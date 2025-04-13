@@ -199,7 +199,6 @@ export function handleSwapHelper(
     pool.save()
 
     // update USD pricing from stablecoin pool (already capped earlier)
-    log.info('[SWAP]: Updating IPPriceUSD: {}', [bundle.IPPriceUSD.toString()])
 
     token0.derivedIP = findNativePerToken(
       token0 as Token,

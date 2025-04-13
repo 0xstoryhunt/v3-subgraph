@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 
 import { Bundle, Burn, Factory, Pool, Tick, Token } from '../../types/schema'
 import { Burn as BurnEvent } from '../../types/templates/Pool/Pool'

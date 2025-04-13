@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 
 import { Bundle, Factory, Mint, Pool, Tick, Token } from '../../types/schema'
 import { Mint as MintEvent } from '../../types/templates/Pool/Pool'
