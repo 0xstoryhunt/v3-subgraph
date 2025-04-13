@@ -45,13 +45,13 @@ export function getNativePriceInUSD(
 ): BigDecimal {
   const stablecoinWrappedNativePool = Pool.load(stablecoinWrappedNativePoolAddress);
   if (stablecoinWrappedNativePool !== null) {
-    log.info(
-      '[STABLE_POOL_PRICES]: token0Price / token1Price: {} / {}', 
-      [
-        stablecoinWrappedNativePool.token0Price.toString(), 
-        stablecoinWrappedNativePool.token1Price.toString()
-      ]
-    );
+    // log.info(
+    //   '[STABLE_POOL_PRICES]: token0Price / token1Price: {} / {}', 
+    //   [
+    //     stablecoinWrappedNativePool.token0Price.toString(), 
+    //     stablecoinWrappedNativePool.token1Price.toString()
+    //   ]
+    // );
     return stablecoinIsToken0 
       ? stablecoinWrappedNativePool.token0Price 
       : stablecoinWrappedNativePool.token1Price;

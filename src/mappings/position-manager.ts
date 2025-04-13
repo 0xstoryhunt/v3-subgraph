@@ -18,7 +18,6 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
     const contract = NonfungiblePositionManager.bind(event.address)
     const positionCall = contract.try_positions(tokenId)
     
-    log.info('Processing IncreaseLiquidity for tokenId: {}', [positionCall.reverted.toString()])
 
     if (!positionCall.reverted) {
       const positionResult = positionCall.value
