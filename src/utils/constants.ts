@@ -25,7 +25,7 @@ export const SECONDS_PER_YEAR = BigDecimal.fromString('31536000') // 365 * 24 * 
     '0x674843c06ff83502ddb4d37c2e09c01cda38cbc8', //USDT
     '0x5267f7ee069ceb3d8f1c760c215569b79d0685ad', //vIP
   ]
-  export const POOLS_TO_SKIP = []
+  export const POOLS_TO_SKIP: string[] = []
 
 export const factoryContract = FactoryContract.bind(Address.fromString(V3_FACTORY_CONTRACT))
 

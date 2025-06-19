@@ -187,6 +187,12 @@ export function updateTokenHourData(token: Token, event: ethereum.Event): TokenH
     tokenHourData.high = tokenPrice
     tokenHourData.low = tokenPrice
     tokenHourData.close = tokenPrice
+    tokenHourData.buyTxCount = ZERO_BI
+    tokenHourData.sellTxCount = ZERO_BI
+    tokenHourData.buyVolume = ZERO_BD
+    tokenHourData.sellVolume = ZERO_BD
+    tokenHourData.buyVolumeUSD = ZERO_BD
+    tokenHourData.sellVolumeUSD = ZERO_BD
   }
 
   if (tokenPrice.gt(tokenHourData.high)) {
@@ -227,6 +233,12 @@ export function updateTokenMinuteData(token: Token, event: ethereum.Event): Toke
     tokenMinuteData.high = tokenPrice
     tokenMinuteData.low = tokenPrice
     tokenMinuteData.close = tokenPrice
+    tokenMinuteData.buyTxCount = ZERO_BI
+    tokenMinuteData.sellTxCount = ZERO_BI
+    tokenMinuteData.buyVolume = ZERO_BD
+    tokenMinuteData.sellVolume = ZERO_BD
+    tokenMinuteData.buyVolumeUSD = ZERO_BD
+    tokenMinuteData.sellVolumeUSD = ZERO_BD
   }
 
   if (tokenPrice.gt(tokenMinuteData.high)) {

@@ -235,39 +235,7 @@ type PositionReward @entity {
   earned: BigDecimal! # Accumulated reward amount for the token
 }
 
-type PositionSnapshot @entity {
-  # <NFT token id>#<block number>
-  id: ID!
-  # owner of the NFT
-  owner: Bytes!
-  # pool the position is within
-  pool: Pool!
-  # position of which the snap was taken of
-  position: Position!
-  # block in which the snap was created
-  blockNumber: BigInt!
-  # timestamp of block in which the snap was created
-  timestamp: BigInt!
-  # total position liquidity
-  liquidity: BigInt!
-  # amount of token 0 ever deposited to position
-  depositedToken0: BigDecimal!
-  # amount of token 1 ever deposited to position
-  depositedToken1: BigDecimal!
-  # amount of token 0 ever withdrawn from position (without fees)
-  withdrawnToken0: BigDecimal!
-  # amount of token 1 ever withdrawn from position (without fees)
-  withdrawnToken1: BigDecimal!
-  # all time collected fees in token0
-  collectedFeesToken0: BigDecimal!
-  # all time collected fees in token1
-  collectedFeesToken1: BigDecimal!
-  # tx in which the snapshot was initialized
-  transaction: Transaction!
-  # internal vars needed for fee computation
-  feeGrowthInside0LastX128: BigInt!
-  feeGrowthInside1LastX128: BigInt!
-}
+
 
 type Transaction @entity {
   # txn hash
@@ -392,22 +360,6 @@ type Swap @entity {
   pnlUSD: BigDecimal! 
   # PnL in IP (native token)
   pnlIP: BigDecimal!   
-}
-
-type User @entity {
-    id: ID!                     # User address
-    totalSwapVolumeUSD: BigDecimal!  # Total swap volume in USD across all tokens
-    totalRealizedPnlUSD: BigDecimal! # Total realized PnL in USD across all tokens
-    totalUnrealizedPnlUSD: BigDecimal! # Total unrealized PnL in USD across all tokens
-}
-
-type UserTokenStats @entity {
-    id: ID!                     # Composite ID: userAddress-tokenAddress
-    user: Bytes!                # User address
-    token: Token!               # Token entity
-    swapVolumeUSD: BigDecimal!  # Total swap volume in USD
-    realizedPnlUSD: BigDecimal! # Total realized PnL in USD
-    unrealizedPnlUSD: BigDecimal! # Total unrealized PnL in USD
 }
 
 type Collect @entity {
@@ -623,6 +575,12 @@ type TokenHourData @entity {
   low: BigDecimal!
   # close price USD
   close: BigDecimal!
+  buyTxCount: BigInt!
+  sellTxCount: BigInt!
+  buyVolume: BigDecimal!
+  sellVolume: BigDecimal!
+  buyVolumeUSD: BigDecimal!
+  sellVolumeUSD: BigDecimal!
 }
 
 type TokenMinuteData @entity {
@@ -654,6 +612,12 @@ type TokenMinuteData @entity {
   low: BigDecimal!
   # close price USD
   close: BigDecimal!
+  buyTxCount: BigInt!
+  sellTxCount: BigInt!
+  buyVolume: BigDecimal!
+  sellVolume: BigDecimal!
+  buyVolumeUSD: BigDecimal!
+  sellVolumeUSD: BigDecimal!
 }
 
 type AlphaHunter @entity {

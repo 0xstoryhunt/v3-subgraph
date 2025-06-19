@@ -1,6 +1,6 @@
-import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 
-import { Bundle, Factory, Pool, PoolDayData, Swap, Token, User, UserTokenStats } from '../../types/schema'
+import { Bundle, Factory, Pool, PoolDayData, Swap, Token } from '../../types/schema'
 import { Swap as SwapEvent } from '../../types/templates/Pool/Pool'
 import { convertTokenToDecimal, loadTransaction, safeDiv } from '../../utils'
 import { getSubgraphConfig, SubgraphConfig } from '../../utils/chains'
@@ -20,20 +20,18 @@ import {
   getTrackedAmountUSD,
   sqrtPriceX96ToTokenPrices,
 } from '../../utils/pricing'
+import { cleanupOldTokenMinuteData } from '../../utils/cleanUpUtills'
 
 // Helper function to compute the absolute value of a BigDecimal
 function bdAbs(x: BigDecimal): BigDecimal {
-  return x.lt(ZERO_BD) ? x.times(BigDecimal.fromString("-1")) : x;
+  return x.lt(ZERO_BD) ? x.times(BigDecimal.fromString('-1')) : x
 }
 
 export function handleSwap(event: SwapEvent): void {
   handleSwapHelper(event)
 }
 
-export function handleSwapHelper(
-  event: SwapEvent, 
-  subgraphConfig: SubgraphConfig = getSubgraphConfig()
-): void {
+export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfig = getSubgraphConfig()): void {
   const factoryAddress = subgraphConfig.factoryAddress
   const stablecoinWrappedNativePoolAddress = subgraphConfig.stablecoinWrappedNativePoolAddress
   const stablecoinIsToken0 = subgraphConfig.stablecoinIsToken0
@@ -46,23 +44,23 @@ export function handleSwapHelper(
   const factory = Factory.load(factoryAddress)!
   const pool = Pool.load(event.address.toHexString())!
 
+  const token0 = Token.load(pool.token0)
+  const token1 = Token.load(pool.token1)
+
   // --- NEW: Cap the native USD price during the unstable period ---
   // Get the native price from the stablecoin pool.
   let newIPPriceUSD = getNativePriceInUSD(stablecoinWrappedNativePoolAddress, stablecoinIsToken0)
-  let unstablePeriod = BigInt.fromI32(43200) // 12 hours in seconds
+  let unstablePeriod = BigInt.fromI32(43200) //8 for WIP/ 4 for other (hours in seconds)
   let timeSinceCreation = event.block.timestamp.minus(pool.createdAtTimestamp)
   // If we are in the unstable period and the price is unusually high, cap it.
   if (timeSinceCreation.lt(unstablePeriod)) {
-    if(newIPPriceUSD.gt(BigDecimal.fromString("20"))) {
-      newIPPriceUSD = BigDecimal.fromString("1")
+    if (newIPPriceUSD.gt(BigDecimal.fromString('20'))) {
+      newIPPriceUSD = BigDecimal.fromString('1')
     }
   }
   bundle.IPPriceUSD = newIPPriceUSD
   bundle.save()
   // --- End native price capping ---
-
-  const token0 = Token.load(pool.token0)
-  const token1 = Token.load(pool.token1)
 
   if (token0 && token1) {
     // amounts - token deltas; can be positive or negative
@@ -70,12 +68,8 @@ export function handleSwapHelper(
     const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
 
     // get absolute values for volume
-    let amount0Abs = amount0.lt(ZERO_BD)
-      ? amount0.times(BigDecimal.fromString("-1"))
-      : amount0
-    let amount1Abs = amount1.lt(ZERO_BD)
-      ? amount1.times(BigDecimal.fromString("-1"))
-      : amount1
+    let amount0Abs = amount0.lt(ZERO_BD) ? amount0.times(BigDecimal.fromString('-1')) : amount0
+    let amount1Abs = amount1.lt(ZERO_BD) ? amount1.times(BigDecimal.fromString('-1')) : amount1
 
     const amount0IP = amount0Abs.times(token0.derivedIP)
     const amount1IP = amount1Abs.times(token1.derivedIP)
@@ -90,9 +84,9 @@ export function handleSwapHelper(
       amount1Abs,
       token1 as Token,
       whitelistTokens,
-    ).div(BigDecimal.fromString("2"))
+    ).div(BigDecimal.fromString('2'))
     const amountTotalIPTracked = safeDiv(amountTotalUSDTracked, bundle.IPPriceUSD)
-    const amountTotalUSDUntracked = amount0USD.plus(amount1USD).div(BigDecimal.fromString("2"))
+    const amountTotalUSDUntracked = amount0USD.plus(amount1USD).div(BigDecimal.fromString('2'))
 
     // ---- BEGIN VOLUME VALIDATION (Unstable Period Filtering) ----
     // During the first 12 hours, we only accept swap volumes if the swap's price is within 5% of our baseline.
@@ -100,7 +94,7 @@ export function handleSwapHelper(
     let validatedAmountTotalIPTracked: BigDecimal = amountTotalIPTracked
 
     // Set deviation threshold to 2000%
-    let threshold = BigDecimal.fromString("20")
+    let threshold = BigDecimal.fromString('20')
 
     if (timeSinceCreation.lt(unstablePeriod)) {
       // Compute current swap price (using token0 as reference)
@@ -122,7 +116,7 @@ export function handleSwapHelper(
           validatedAmountTotalIPTracked = ZERO_BD
         } else {
           // Accept this swap's volume and update baseline smoothly (average of previous baseline and current price)
-          let newBaseline = pool.token0Price.plus(currentSwapPrice).div(BigDecimal.fromString("2"))
+          let newBaseline = pool.token0Price.plus(currentSwapPrice).div(BigDecimal.fromString('2'))
           pool.token0Price = newBaseline
         }
       }
@@ -137,10 +131,10 @@ export function handleSwapHelper(
     // Fees computed from validated volumes
     const feesIP = validatedAmountTotalIPTracked
       .times(pool.feeTier.toBigDecimal())
-      .div(BigDecimal.fromString("1000000"))
+      .div(BigDecimal.fromString('1000000'))
     const feesUSD = validatedAmountTotalUSDTracked
       .times(pool.feeTier.toBigDecimal())
-      .div(BigDecimal.fromString("1000000"))
+      .div(BigDecimal.fromString('1000000'))
 
     // reset aggregate TVL before updating pool TVL
     const currentPoolTvlIP = pool.totalValueLockedIP
@@ -156,9 +150,9 @@ export function handleSwapHelper(
     pool.txCount = pool.txCount.plus(ONE_BI)
 
     // Calculate the value of the tokens before the swap
-    const valueBeforeSwapToken0 = pool.totalValueLockedToken0.times(token0.derivedIP).times(bundle.IPPriceUSD);
-    const valueBeforeSwapToken1 = pool.totalValueLockedToken1.times(token1.derivedIP).times(bundle.IPPriceUSD);
-    const totalValueBeforeSwap = valueBeforeSwapToken0.plus(valueBeforeSwapToken1);
+    const valueBeforeSwapToken0 = pool.totalValueLockedToken0.times(token0.derivedIP).times(bundle.IPPriceUSD)
+    const valueBeforeSwapToken1 = pool.totalValueLockedToken1.times(token1.derivedIP).times(bundle.IPPriceUSD)
+    const totalValueBeforeSwap = valueBeforeSwapToken0.plus(valueBeforeSwapToken1)
 
     // update pool state with new liquidity, price, and tick.
     pool.liquidity = event.params.liquidity
@@ -168,13 +162,13 @@ export function handleSwapHelper(
     pool.totalValueLockedToken1 = pool.totalValueLockedToken1.plus(amount1)
 
     // Calculate the value of the tokens after the swap
-    const valueAfterSwapToken0 = pool.totalValueLockedToken0.times(token0.derivedIP).times(bundle.IPPriceUSD);
-    const valueAfterSwapToken1 = pool.totalValueLockedToken1.times(token1.derivedIP).times(bundle.IPPriceUSD);
-    const totalValueAfterSwap = valueAfterSwapToken0.plus(valueAfterSwapToken1);
+    const valueAfterSwapToken0 = pool.totalValueLockedToken0.times(token0.derivedIP).times(bundle.IPPriceUSD)
+    const valueAfterSwapToken1 = pool.totalValueLockedToken1.times(token1.derivedIP).times(bundle.IPPriceUSD)
+    const totalValueAfterSwap = valueAfterSwapToken0.plus(valueAfterSwapToken1)
 
     // Calculate PnL
-    const pnlUSD = totalValueAfterSwap.minus(totalValueBeforeSwap);
-    const pnlIP = safeDiv(pnlUSD, bundle.IPPriceUSD);
+    const pnlUSD = totalValueAfterSwap.minus(totalValueBeforeSwap)
+    const pnlIP = safeDiv(pnlUSD, bundle.IPPriceUSD)
 
     // update token0 data
     token0.volume = token0.volume.plus(amount0Abs)
@@ -214,8 +208,8 @@ export function handleSwapHelper(
       minimumNativeLocked,
     )
 
-    updateTokenMarketCap(token0,whitelistTokens,event.block.timestamp)
-    updateTokenMarketCap(token1,whitelistTokens,event.block.timestamp)
+    updateTokenMarketCap(token0, whitelistTokens, event.block.timestamp)
+    updateTokenMarketCap(token1, whitelistTokens, event.block.timestamp)
 
     /**
      * Update TVL and USD TVL
@@ -226,15 +220,15 @@ export function handleSwapHelper(
     pool.totalValueLockedUSD = pool.totalValueLockedIP.times(bundle.IPPriceUSD)
     // Retrieve PoolDayData from the updatePoolDayData function
 
-    let dayNumber = event.block.timestamp.toI32() / 86400; 
+    let dayNumber = event.block.timestamp.toI32() / 86400
     // Target day is two days ago
-    let targetDay = dayNumber - 2;
+    let targetDay = dayNumber - 2
     // Construct the ID: typically pool day data IDs are of the form "<pool.id>-<dayNumber>"
-    let poolDayID = pool.id.concat("-").concat(targetDay.toString());
-    let _poolDayData = PoolDayData.load(poolDayID);
+    let poolDayID = pool.id.concat('-').concat(targetDay.toString())
+    let _poolDayData = PoolDayData.load(poolDayID)
     if (_poolDayData == null) {
       // Optionally fallback to the current day's snapshot if 2-days-ago is missing.
-      _poolDayData = updatePoolDayData(event);
+      _poolDayData = updatePoolDayData(event)
     }
     // --- NEW: Updated Fee APR Calculation using the PancakeSwap formula ---
     // Fee APR = (TVL * feePercent * 365) / (dailyVolume) * 100
@@ -249,44 +243,44 @@ export function handleSwapHelper(
     // Update UserTokenStats for the sender and tokens
 
     // Get or create UserTokenStats for the sender and token0
-    let userToken0Stats = UserTokenStats.load(event.transaction.from.toHexString() + "-" + token0.id);
-    if (!userToken0Stats) {
-      userToken0Stats = new UserTokenStats(event.transaction.from.toHexString() + "-" + token0.id);
-      userToken0Stats.user = event.transaction.from;
-      userToken0Stats.token = token0.id;
-      userToken0Stats.swapVolumeUSD = ZERO_BD;
-      userToken0Stats.realizedPnlUSD = ZERO_BD;
-      userToken0Stats.unrealizedPnlUSD = ZERO_BD;
-    }
-    userToken0Stats.swapVolumeUSD = userToken0Stats.swapVolumeUSD.plus(validatedAmountTotalUSDTracked);
-    userToken0Stats.realizedPnlUSD = userToken0Stats.realizedPnlUSD.plus(pnlUSD);
-    userToken0Stats.save();
+    // let userToken0Stats = UserTokenStats.load(event.transaction.from.toHexString() + "-" + token0.id);
+    // if (!userToken0Stats) {
+    //   userToken0Stats = new UserTokenStats(event.transaction.from.toHexString() + "-" + token0.id);
+    //   userToken0Stats.user = event.transaction.from;
+    //   userToken0Stats.token = token0.id;
+    //   userToken0Stats.swapVolumeUSD = ZERO_BD;
+    //   userToken0Stats.realizedPnlUSD = ZERO_BD;
+    //   userToken0Stats.unrealizedPnlUSD = ZERO_BD;
+    // }
+    // userToken0Stats.swapVolumeUSD = userToken0Stats.swapVolumeUSD.plus(validatedAmountTotalUSDTracked);
+    // userToken0Stats.realizedPnlUSD = userToken0Stats.realizedPnlUSD.plus(pnlUSD);
+    // userToken0Stats.save();
 
     // Get or create UserTokenStats for the sender and token1
-    let userToken1Stats = UserTokenStats.load(event.transaction.from.toHexString() + "-" + token1.id);
-    if (!userToken1Stats) {
-      userToken1Stats = new UserTokenStats(event.transaction.from.toHexString() + "-" + token1.id);
-      userToken1Stats.user = event.transaction.from;
-      userToken1Stats.token = token1.id;
-      userToken1Stats.swapVolumeUSD = ZERO_BD;
-      userToken1Stats.realizedPnlUSD = ZERO_BD;
-      userToken1Stats.unrealizedPnlUSD = ZERO_BD;
-    }
-    userToken1Stats.swapVolumeUSD = userToken1Stats.swapVolumeUSD.plus(validatedAmountTotalUSDTracked);
-    userToken1Stats.realizedPnlUSD = userToken1Stats.realizedPnlUSD.plus(pnlUSD);
-    userToken1Stats.save();
+    // let userToken1Stats = UserTokenStats.load(event.transaction.from.toHexString() + "-" + token1.id);
+    // if (!userToken1Stats) {
+    //   userToken1Stats = new UserTokenStats(event.transaction.from.toHexString() + "-" + token1.id);
+    //   userToken1Stats.user = event.transaction.from;
+    //   userToken1Stats.token = token1.id;
+    //   userToken1Stats.swapVolumeUSD = ZERO_BD;
+    //   userToken1Stats.realizedPnlUSD = ZERO_BD;
+    //   userToken1Stats.unrealizedPnlUSD = ZERO_BD;
+    // }
+    // userToken1Stats.swapVolumeUSD = userToken1Stats.swapVolumeUSD.plus(validatedAmountTotalUSDTracked);
+    // userToken1Stats.realizedPnlUSD = userToken1Stats.realizedPnlUSD.plus(pnlUSD);
+    // userToken1Stats.save();
 
     // Update User entity ---
-    let user = User.load(event.transaction.from.toHexString());
-    if (!user) {
-      user = new User(event.transaction.from.toHexString());
-      user.totalSwapVolumeUSD = ZERO_BD;
-      user.totalRealizedPnlUSD = ZERO_BD;
-      user.totalUnrealizedPnlUSD = ZERO_BD;
-    }
-    user.totalSwapVolumeUSD = user.totalSwapVolumeUSD.plus(validatedAmountTotalUSDTracked);
-    user.totalRealizedPnlUSD = user.totalRealizedPnlUSD.plus(pnlUSD);
-    user.save();
+    // let user = User.load(event.transaction.from.toHexString());
+    // if (!user) {
+    //   user = new User(event.transaction.from.toHexString());
+    //   user.totalSwapVolumeUSD = ZERO_BD;
+    //   user.totalRealizedPnlUSD = ZERO_BD;
+    //   user.totalUnrealizedPnlUSD = ZERO_BD;
+    // }
+    // user.totalSwapVolumeUSD = user.totalSwapVolumeUSD.plus(validatedAmountTotalUSDTracked);
+    // user.totalRealizedPnlUSD = user.totalRealizedPnlUSD.plus(pnlUSD);
+    // user.save();
 
     // create Swap event
     const transaction = loadTransaction(event, pool.id)
@@ -314,10 +308,58 @@ export function handleSwapHelper(
     const poolHourData = updatePoolHourData(event)
     const token0DayData = updateTokenDayData(token0 as Token, event)
     const token1DayData = updateTokenDayData(token1 as Token, event)
-    const token0HourData = updateTokenHourData(token0 as Token, event)
-    const token1HourData = updateTokenHourData(token1 as Token, event)
+
+    // Determine if this is a buy or sell for each token
+    const isToken0Buy = amount0.lt(ZERO_BD) // amount0 negative means token0 was bought
+    const isToken1Buy = amount1.lt(ZERO_BD) // amount1 negative means token1 was bought
+
+    // Update token minute data with buy/sell info
     const token0MinuteData = updateTokenMinuteData(token0 as Token, event)
     const token1MinuteData = updateTokenMinuteData(token1 as Token, event)
+
+    if (isToken0Buy) {
+      token0MinuteData.buyTxCount = token0MinuteData.buyTxCount.plus(ONE_BI)
+      token0MinuteData.buyVolume = token0MinuteData.buyVolume.plus(amount0Abs)
+      token0MinuteData.buyVolumeUSD = token0MinuteData.buyVolumeUSD.plus(validatedAmountTotalUSDTracked)
+    } else {
+      token0MinuteData.sellTxCount = token0MinuteData.sellTxCount.plus(ONE_BI)
+      token0MinuteData.sellVolume = token0MinuteData.sellVolume.plus(amount0Abs)
+      token0MinuteData.sellVolumeUSD = token0MinuteData.sellVolumeUSD.plus(validatedAmountTotalUSDTracked)
+    }
+
+    if (isToken1Buy) {
+      token1MinuteData.buyTxCount = token1MinuteData.buyTxCount.plus(ONE_BI)
+      token1MinuteData.buyVolume = token1MinuteData.buyVolume.plus(amount1Abs)
+      token1MinuteData.buyVolumeUSD = token1MinuteData.buyVolumeUSD.plus(validatedAmountTotalUSDTracked)
+    } else {
+      token1MinuteData.sellTxCount = token1MinuteData.sellTxCount.plus(ONE_BI)
+      token1MinuteData.sellVolume = token1MinuteData.sellVolume.plus(amount1Abs)
+      token1MinuteData.sellVolumeUSD = token1MinuteData.sellVolumeUSD.plus(validatedAmountTotalUSDTracked)
+    }
+
+    // Update token hour data with buy/sell info
+    const token0HourData = updateTokenHourData(token0 as Token, event)
+    const token1HourData = updateTokenHourData(token1 as Token, event)
+
+    if (isToken0Buy) {
+      token0HourData.buyTxCount = token0HourData.buyTxCount.plus(ONE_BI)
+      token0HourData.buyVolume = token0HourData.buyVolume.plus(amount0Abs)
+      token0HourData.buyVolumeUSD = token0HourData.buyVolumeUSD.plus(validatedAmountTotalUSDTracked)
+    } else {
+      token0HourData.sellTxCount = token0HourData.sellTxCount.plus(ONE_BI)
+      token0HourData.sellVolume = token0HourData.sellVolume.plus(amount0Abs)
+      token0HourData.sellVolumeUSD = token0HourData.sellVolumeUSD.plus(validatedAmountTotalUSDTracked)
+    }
+
+    if (isToken1Buy) {
+      token1HourData.buyTxCount = token1HourData.buyTxCount.plus(ONE_BI)
+      token1HourData.buyVolume = token1HourData.buyVolume.plus(amount1Abs)
+      token1HourData.buyVolumeUSD = token1HourData.buyVolumeUSD.plus(validatedAmountTotalUSDTracked)
+    } else {
+      token1HourData.sellTxCount = token1HourData.sellTxCount.plus(ONE_BI)
+      token1HourData.sellVolume = token1HourData.sellVolume.plus(amount1Abs)
+      token1HourData.sellVolumeUSD = token1HourData.sellVolumeUSD.plus(validatedAmountTotalUSDTracked)
+    }
 
     // update volume metrics using validated volume
     storyhuntDayData.volumeIP = storyhuntDayData.volumeIP.plus(validatedAmountTotalIPTracked)
@@ -364,6 +406,16 @@ export function handleSwapHelper(
     token1MinuteData.untrackedVolumeUSD = token1MinuteData.untrackedVolumeUSD.plus(validatedAmountTotalUSDTracked)
     token1MinuteData.feesUSD = token1MinuteData.feesUSD.plus(feesUSD)
 
+    //Clean up function
+    cleanupOldTokenMinuteData(
+      event.block.timestamp,
+      pool.token0
+    )
+    cleanupOldTokenMinuteData(
+      event.block.timestamp,
+      pool.token1
+    )
+
     swap.save()
     token0DayData.save()
     token1DayData.save()
@@ -393,25 +445,22 @@ export function handleSwapHelper(
  *
  * This function uses safe division to avoid division by zero.
  */
-function calculateFeeAPR(
-  pool: Pool,
-  poolDayData: PoolDayData
-): void {
+function calculateFeeAPR(pool: Pool, poolDayData: PoolDayData): void {
   // Convert feeTier to a fee percentage (e.g., 3000 becomes 0.003)
-  let feePercent: BigDecimal = pool.feeTier.toBigDecimal().div(BigDecimal.fromString("1000000"));
-  
+  let feePercent: BigDecimal = pool.feeTier.toBigDecimal().div(BigDecimal.fromString('1000000'))
+
   if (poolDayData.volumeUSD.equals(ZERO_BD)) {
-    pool.feeAPRIP = ZERO_BD;
-    pool.feeAPRUSD = ZERO_BD;
+    pool.feeAPRIP = ZERO_BD
+    pool.feeAPRUSD = ZERO_BD
   } else {
     pool.feeAPRIP = safeDiv(
-      pool.totalValueLockedIP.times(feePercent).times(BigDecimal.fromString("365")),
-      poolDayData.volumeUSD
-    ).times(BigDecimal.fromString("100"));
+      pool.totalValueLockedIP.times(feePercent).times(BigDecimal.fromString('365')),
+      poolDayData.volumeUSD,
+    ).times(BigDecimal.fromString('100'))
     pool.feeAPRUSD = safeDiv(
-      pool.totalValueLockedUSD.times(feePercent).times(BigDecimal.fromString("365")),
-      poolDayData.volumeUSD
-    ).times(BigDecimal.fromString("100"));
+      pool.totalValueLockedUSD.times(feePercent).times(BigDecimal.fromString('365')),
+      poolDayData.volumeUSD,
+    ).times(BigDecimal.fromString('100'))
   }
-  pool.save();
+  pool.save()
 }
