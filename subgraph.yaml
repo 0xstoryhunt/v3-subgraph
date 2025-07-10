@@ -1,13 +1,13 @@
 specVersion: 0.0.4
 description: StoryHunt - first IPFi Story Native AMM DEX to trade Tokens, NFTs and IPs. Anything and Everything.
-repository: https://github.com/0xstoryhunt/v3-subgraph.git
+repository: https://github.com/ipdotworld/storyhunt-subgraph-new.git
 schema:
   file: ./schema.graphql
 features:
   - nonFatalErrors
   - grafting
 dataSources:
-  
+
   - kind: ethereum/contract
     name: Factory
     network: story
@@ -37,6 +37,8 @@ dataSources:
       eventHandlers:
         - event: PoolCreated(indexed address,indexed address,indexed uint24,int24,address)
           handler: handlePoolCreated
+
+
 
   - kind: ethereum/contract
     name: NonfungiblePositionManager
@@ -169,4 +171,3 @@ templates:
           handler: handleBurn
         - event: Collect(indexed address,address,indexed int24,indexed int24,uint128,uint128)
           handler: handleCollect
-

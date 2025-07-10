@@ -7,6 +7,20 @@ type CreatedToken @entity {
   decimals: Int!
 }
 
+type TokenDeployment @entity {
+  id: ID!
+  block: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  transactionHash: String!
+  contractId: String!
+  tokenCreator: String!
+  token: String!
+  pool: String!
+  startTickList: [BigInt!]!
+  allocationList: [BigInt!]!
+}
+
 type Factory @entity {
   # factory address
   id: ID!
@@ -157,8 +171,8 @@ type Pool @entity {
   ticks: [Tick!]! @derivedFrom(field: "pool")
   from: String
   feesIP: BigDecimal!
-  feeAPRUSD: BigDecimal! 
-  feeAPRIP: BigDecimal! 
+  feeAPRUSD: BigDecimal!
+  feeAPRIP: BigDecimal!
   lmPool: LMPool
 }
 
