@@ -1,6 +1,6 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 
-import { Factory as FactoryContract } from '../types/Factory/Factory'
+import { Factory as FactoryContract } from '../types/NonfungiblePositionManager/Factory'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 
