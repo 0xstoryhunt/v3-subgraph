@@ -74,6 +74,27 @@ dataSources:
           handler: handleTransfer
 
   - kind: ethereum/contract
+    name: IPWorld
+    network: story
+    source:
+      address: '0xf677faBB16BBFF36f41bf035eDAE63a28119ed6D'
+      abi: IPWorld
+      startBlock: 6657019
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/ipworld.ts
+      entities:
+        - TokenDeployment
+      abis:
+        - name: IPWorld
+          file: ./abis/IPWorld.json
+      eventHandlers:
+        - event: TokenDeployed(indexed address,indexed address,indexed address,int24[],uint256[])
+          handler: handleTokenDeployed
+
+  - kind: ethereum/contract
     name: OldAlphaHunterV3
     network: story
     source:
@@ -169,24 +190,3 @@ templates:
           handler: handleBurn
         - event: Collect(indexed address,address,indexed int24,indexed int24,uint128,uint128)
           handler: handleCollect
-
-  - kind: ethereum/contract
-    name: IPWorld
-    network: story-aeneid
-    source:
-      address: '0x5389aC74338cAafC388a3b600D5CA416D7b7077B'
-      abi: IPWorld
-      startBlock: 6657019
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/mappings/ipworld.ts
-      entities:
-        - TokenDeployment
-      abis:
-        - name: IPWorld
-          file: ./abis/IPWorld.json
-      eventHandlers:
-        - event: TokenDeployed(indexed address,indexed address,indexed address,int24[],uint256[])
-          handler: handleTokenDeployed
