@@ -686,3 +686,27 @@ type LMTransaction @entity {
   token: Token # Reward Token
   timestamp: BigInt! # Transaction timestamp
 }
+
+type HarvestEvent @entity {
+  id: ID!
+  token: String!
+  wethCollected: BigInt!
+  tokensCollected: BigInt!
+  tokensBurned: BigInt!
+  wethToBuyback: BigInt!
+  wethToIpOwner: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  transactionHash: String!
+}
+
+type ClaimEvent @entity {
+  id: ID!
+  token: String!
+  recipient: String!
+  tokenAmount: BigInt!
+  ethAmount: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  transactionHash: String!
+}

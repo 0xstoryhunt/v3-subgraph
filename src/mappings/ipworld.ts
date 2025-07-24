@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { TokenDeployed } from '../types/IPWorld/IPWorld'
-import { TokenDeployment } from '../types/schema'
+import { TokenDeployed, Harvest } from '../types/IPWorld/IPWorld'
+import { TokenDeployment, HarvestEvent } from '../types/schema'
 
 export function handleTokenDeployed(event: TokenDeployed): void {
   const tokenDeployment = new TokenDeployment(event.transaction.hash.toHexString() + '#' + event.logIndex.toString())
@@ -29,4 +29,20 @@ export function handleTokenDeployed(event: TokenDeployed): void {
   tokenDeployment.allocationList = allocationList
 
   tokenDeployment.save()
+}
+
+export function handleHarvest(event: Harvest): void {
+  const harvestEvent = new HarvestEvent(event.transaction.hash.toHexString() + '#' + event.logIndex.toString())
+
+  harvestEvent.token = event.params.token.toHexString()
+  harvestEvent.wethCollected = event.params.wethCollected
+  harvestEvent.tokensCollected = event.params.tokensCollected
+  harvestEvent.tokensBurned = event.params.tokensBurned
+  harvestEvent.wethToBuyback = event.params.wethToBuyback
+  harvestEvent.wethToIpOwner = event.params.wethToIpOwner
+  harvestEvent.blockNumber = event.block.number
+  harvestEvent.timestamp = event.block.timestamp
+  harvestEvent.transactionHash = event.transaction.hash.toHexString()
+
+  harvestEvent.save()
 }
