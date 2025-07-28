@@ -1,0 +1,44 @@
+name: harvest-vesting-prodv2
+version: 1
+resource_size: s
+apiVersion: 3
+sources:
+  storyhunt.harvest_events:
+    type: subgraph_entity
+    subgraphs:
+      - name: storyhunt-subgraph-prodv2
+        version: v1.0.4
+    name: harvest_event
+  storyhunt.claim_events:
+    type: subgraph_entity
+    subgraphs:
+      - name: storyhunt-subgraph-prodv2
+        version: v1.0.4
+    name: claim_event
+transforms:
+  storyhunt.filtered_harvest_events:
+    sql: |
+      SELECT * FROM storyhunt.harvest_events
+      WHERE weth_to_ip_owner > 0 OR weth_to_buyback > 0 OR weth_collected > 0 OR tokens_collected > 0 OR tokens_burned > 0
+    primary_key: id
+  storyhunt.filtered_claim_events:
+    sql: |
+      SELECT * FROM storyhunt.claim_events
+      WHERE eth_amount > 0 OR token_amount > 0
+    primary_key: id
+sinks:
+  postgres_storyhunt.harvest_events_public_storyhunt_harvest_events:
+    type: postgres
+    table: storyhunt_harvest_events
+    schema: public
+    secret_name: POSTGRES_SECRET_PRODV2
+    description: "Postgres sink for StoryHunt harvest events with filtering"
+    from: storyhunt.filtered_harvest_events
+  postgres_storyhunt.claim_events_public_storyhunt_claim_events:
+    type: postgres
+    table: storyhunt_claim_events
+    schema: public
+    secret_name: POSTGRES_SECRET_PRODV2
+    description: "Postgres sink for StoryHunt claim events with filtering"
+    from: storyhunt.filtered_claim_events
+dedicated_egress_ip: true

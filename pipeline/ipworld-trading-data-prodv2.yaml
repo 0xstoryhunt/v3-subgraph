@@ -1,0 +1,91 @@
+name: ipworld-trading-data-token-tracking-story-prodv2
+resource_size: s
+apiVersion: 3
+sources:
+  story.linked:
+    type: subgraph_entity
+    name: linked
+    subgraphs:
+      - name: ipworld-trading-data-story
+        version: 0.0.4
+  story.claimed:
+    type: subgraph_entity
+    name: claimed
+    subgraphs:
+      - name: ipworld-trading-data-story
+        version: 0.0.4
+  story.harvest:
+    type: subgraph_entity
+    name: harvest
+    subgraphs:
+      - name: ipworld-trading-data-story
+        version: 0.0.4
+  story.upgraded:
+    type: subgraph_entity
+    name: upgraded
+    subgraphs:
+      - name: ipworld-trading-data-story
+        version: 0.0.4
+  story.verified:
+    type: subgraph_entity
+    name: verified
+    subgraphs:
+      - name: ipworld-trading-data-story
+        version: 0.0.4
+  story.token_deployed:
+    type: subgraph_entity
+    name: token_deployed
+    subgraphs:
+      - name: ipworld-trading-data-story
+        version: 0.0.4
+  story.ownership_transferred:
+    type: subgraph_entity
+    name: ownership_transferred
+    subgraphs:
+      - name: ipworld-trading-data-story
+        version: 0.0.4
+transforms: {}
+sinks:
+  postgres_story.linked_public_story_linked_linked:
+    type: postgres
+    secret_name: POSTGRES_SECRET_PRODV2
+    from: story.linked
+    table: story_linked_linked
+    schema: public
+  postgres_story.claimed_public_story_claimed_claimed:
+    type: postgres
+    secret_name: POSTGRES_SECRET_PRODV2
+    from: story.claimed
+    table: story_claimed_claimed
+    schema: public
+  postgres_story.harvest_public_story_harvest_harvest:
+    type: postgres
+    secret_name: POSTGRES_SECRET_PRODV2
+    from: story.harvest
+    table: story_harvest_harvest
+    schema: public
+  postgres_story.upgraded_public_story_upgraded_upgraded:
+    type: postgres
+    secret_name: POSTGRES_SECRET_PRODV2
+    from: story.upgraded
+    table: story_upgraded_upgraded
+    schema: public
+  postgres_story.verified_public_story_verified_verified:
+    type: postgres
+    secret_name: POSTGRES_SECRET_PRODV2
+    from: story.verified
+    table: story_verified_verified
+    schema: public
+  postgres_story.token_deployed_public_story_token_deployed_token_deployed:
+    type: postgres
+    secret_name: POSTGRES_SECRET_PRODV2
+    from: story.token_deployed
+    table: story_token_deployed_token_deployed
+    schema: public
+  postgres_story.ownership_transferred_public_story_ownership_transferred_ownership_transferred:
+    type: postgres
+    secret_name: POSTGRES_SECRET_PRODV2
+    from: story.ownership_transferred
+    table: story_ownership_transferred_ownership_transferred
+    schema: public
+dedicated_egress_ip: true
