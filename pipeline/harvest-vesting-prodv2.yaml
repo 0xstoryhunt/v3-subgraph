@@ -7,13 +7,13 @@ sources:
     type: subgraph_entity
     subgraphs:
       - name: storyhunt-subgraph-prodv2
-        version: v1.0.4
+        version: v1.0.5
     name: harvest_event
   storyhunt.claim_events:
     type: subgraph_entity
     subgraphs:
       - name: storyhunt-subgraph-prodv2
-        version: v1.0.4
+        version: v1.0.5
     name: claim_event
 transforms:
   storyhunt.filtered_harvest_events:
