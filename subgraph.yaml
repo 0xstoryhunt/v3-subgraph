@@ -111,12 +111,15 @@ dataSources:
       file: ./src/mappings/ipowner-vault.ts
       entities:
         - ClaimEvent
+        - VestingSchedule
       abis:
         - name: IPOwnerVault
           file: ./abis/IPOwnerVault.json
       eventHandlers:
         - event: VestedTokensAndEthClaimed(indexed address,indexed address,uint256,uint256)
           handler: handleVestedTokensAndEthClaimed
+        - event: VestingScheduleCreated(indexed address,uint256,uint64,uint64)
+          handler: handleVestingScheduleCreated
 
   - kind: ethereum/contract
     name: OldAlphaHunterV3

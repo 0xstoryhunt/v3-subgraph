@@ -7,14 +7,20 @@ sources:
     type: subgraph_entity
     subgraphs:
       - name: storyhunt-subgraph-prodv2
-        version: v1.0.5
+        version: v1.0.6
     name: harvest_event
   storyhunt.claim_events:
     type: subgraph_entity
     subgraphs:
       - name: storyhunt-subgraph-prodv2
-        version: v1.0.5
+        version: v1.0.6
     name: claim_event
+  storyhunt.vesting_schedules:
+    type: subgraph_entity
+    subgraphs:
+      - name: storyhunt-subgraph-prodv2
+        version: v1.0.6
+    name: vesting_schedule
 transforms:
   storyhunt.filtered_harvest_events:
     sql: |
@@ -25,6 +31,11 @@ transforms:
     sql: |
       SELECT * FROM storyhunt.claim_events
       WHERE eth_amount > 0 OR token_amount > 0
+    primary_key: id
+  storyhunt.filtered_vesting_schedules:
+    sql: |
+      SELECT * FROM storyhunt.vesting_schedules
+      WHERE total_amount > 0
     primary_key: id
 sinks:
   postgres_storyhunt.harvest_events_public_storyhunt_harvest_events:
@@ -41,4 +52,11 @@ sinks:
     secret_name: POSTGRES_SECRET_PRODV2
     description: "Postgres sink for StoryHunt claim events with filtering"
     from: storyhunt.filtered_claim_events
+  postgres_storyhunt.vesting_schedules_public_storyhunt_vesting_schedules:
+    type: postgres
+    table: storyhunt_vesting_schedules
+    schema: public
+    secret_name: POSTGRES_SECRET_PRODV2
+    description: "Postgres sink for StoryHunt vesting schedules with filtering"
+    from: storyhunt.filtered_vesting_schedules
 dedicated_egress_ip: true

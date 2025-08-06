@@ -1,5 +1,5 @@
-import { VestedTokensAndEthClaimed } from '../types/IPOwnerVault/IPOwnerVault'
-import { ClaimEvent } from '../types/schema'
+import { VestedTokensAndEthClaimed, VestingScheduleCreated } from '../types/IPOwnerVault/IPOwnerVault'
+import { ClaimEvent, VestingSchedule } from '../types/schema'
 
 export function handleVestedTokensAndEthClaimed(event: VestedTokensAndEthClaimed): void {
   const claimEvent = new ClaimEvent(event.transaction.hash.toHexString() + '#' + event.logIndex.toString())
@@ -13,4 +13,18 @@ export function handleVestedTokensAndEthClaimed(event: VestedTokensAndEthClaimed
   claimEvent.transactionHash = event.transaction.hash.toHexString()
 
   claimEvent.save()
+}
+
+export function handleVestingScheduleCreated(event: VestingScheduleCreated): void {
+  const vestingSchedule = new VestingSchedule(event.transaction.hash.toHexString() + '#' + event.logIndex.toString())
+
+  vestingSchedule.token = event.params.token.toHexString()
+  vestingSchedule.totalAmount = event.params.totalAmount
+  vestingSchedule.startTime = event.params.startTime
+  vestingSchedule.endTime = event.params.endTime
+  vestingSchedule.blockNumber = event.block.number
+  vestingSchedule.timestamp = event.block.timestamp
+  vestingSchedule.transactionHash = event.transaction.hash.toHexString()
+
+  vestingSchedule.save()
 }

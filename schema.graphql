@@ -92,7 +92,7 @@ type Token @entity {
   # derivedNative
   derivedIP: BigDecimal!
   # <-- New field for market capitalization
-  marketCap: BigDecimal!  
+  marketCap: BigDecimal!
   lastMarketCapUpdate: BigInt
   # pools token is in that are white listed for USD pricing
   whitelistPools: [Pool!]!
@@ -371,9 +371,9 @@ type Swap @entity {
   # index within the txn
   logIndex: BigInt
   # PnL in USD
-  pnlUSD: BigDecimal! 
+  pnlUSD: BigDecimal!
   # PnL in IP (native token)
-  pnlIP: BigDecimal!   
+  pnlIP: BigDecimal!
 }
 
 type Collect @entity {
@@ -706,6 +706,17 @@ type ClaimEvent @entity {
   recipient: String!
   tokenAmount: BigInt!
   ethAmount: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  transactionHash: String!
+}
+
+type VestingSchedule @entity {
+  id: ID!
+  token: String!
+  totalAmount: BigInt!
+  startTime: BigInt!
+  endTime: BigInt!
   blockNumber: BigInt!
   timestamp: BigInt!
   transactionHash: String!
